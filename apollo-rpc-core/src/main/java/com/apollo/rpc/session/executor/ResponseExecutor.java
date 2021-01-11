@@ -1,12 +1,12 @@
-package com.apollo.rpc.session.excutor;
+package com.apollo.rpc.session.executor;
 
 import com.apollo.rpc.msg.RPCRspBase;
 
-public class ResponseExcutor<T extends RPCRspBase> extends RequestMsgManager {
+public class ResponseExecutor<T extends RPCRspBase> extends RequestMsgManager {
 
     public void doResponse(T  rspBase){
 
-        RequestExcutor request = getAndRemoveRequest(rspBase);
+        RequestExecutor request = getAndRemoveRequest(rspBase);
 
         rspBase.responseTime = System.currentTimeMillis();
 

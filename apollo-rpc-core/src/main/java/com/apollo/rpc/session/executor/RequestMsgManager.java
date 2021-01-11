@@ -1,4 +1,4 @@
-package com.apollo.rpc.session.excutor;
+package com.apollo.rpc.session.executor;
 
 
 import com.apollo.rpc.exception.RPCExceptionUtil;
@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class RequestMsgManager {
 
-    private static final Map<String, Map<Long, RequestExcutor<RPCReqBase>>> sessions = new ConcurrentHashMap<>();
+    private static final Map<String, Map<Long, RequestExecutor<RPCReqBase>>> sessions = new ConcurrentHashMap<>();
 
     private static Thread thread;
 
@@ -24,16 +24,16 @@ public class RequestMsgManager {
 
                 while(true){
                     long currTime = System.currentTimeMillis();
-                    for (Map<Long, RequestExcutor<RPCReqBase>> map : sessions.values()) {
+                    for (Map<Long, RequestExecutor<RPCReqBase>> map : sessions.values()) {
                         //避免ConcurrentModificationException，先将超时的请求提出来
-                        List<RequestExcutor<RPCReqBase>> list = new ArrayList<>();
-                        for (RequestExcutor<RPCReqBase> request : map.values()){
+                        List<RequestExecutor<RPCReqBase>> list = new ArrayList<>();
+                        for (RequestExecutor<RPCReqBase> request : map.values()){
                             if(currTime - request.reqBase.requestTime > rpc_client_timeout){
                                 list.add(request);
                             }
                         }
                         //执行超时操作
-                        for(RequestExcutor request : list) {
+                        for(RequestExecutor request : list) {
                             doResponseOutOfTime(request);
                         }
                     }
@@ -54,12 +54,12 @@ public class RequestMsgManager {
      * @param request
      * @param <A>
      */
-    protected static <A extends RPCReqBase> void putRequest(RequestExcutor<A> request) {
+    protected static <A extends RPCReqBase> void putRequest(RequestExecutor<A> request) {
 
-        RequestExcutor<RPCReqBase> requestExcutor = (RequestExcutor<RPCReqBase>)request; //强制转型
+        RequestExecutor<RPCReqBase> requestExecutor = (RequestExecutor<RPCReqBase>)request; //强制转型
 
         //第一步：获取对应服务的map
-        Map<Long, RequestExcutor<RPCReqBase>> map = sessions.get(request.reqBase.serverName);
+        Map<Long, RequestExecutor<RPCReqBase>> map = sessions.get(request.reqBase.serverName);
 
         if(map == null){
             synchronized (RequestMsgManager.class){
@@ -71,7 +71,7 @@ public class RequestMsgManager {
             }
         }
         //第二步：将request放入map
-        map.put(request.reqBase.sequenceNo, requestExcutor);
+        map.put(request.reqBase.sequenceNo, requestExecutor);
 
     }
 
@@ -80,26 +80,26 @@ public class RequestMsgManager {
      * @param response
      * @return
      */
-    protected static RequestExcutor<RPCReqBase> getAndRemoveRequest(RPCRspBase response){
+    protected static RequestExecutor<RPCReqBase> getAndRemoveRequest(RPCRspBase response){
 
-        Map<Long, RequestExcutor<RPCReqBase>> map = sessions.get(response.serverName);
+        Map<Long, RequestExecutor<RPCReqBase>> map = sessions.get(response.serverName);
         if(map != null){
             return map.remove(response.sequenceNo);
         }
         return null;
     }
 
-    private synchronized static Map<Long, RequestExcutor<RPCReqBase>> createMap(){
+    private synchronized static Map<Long, RequestExecutor<RPCReqBase>> createMap(){
         return new ConcurrentHashMap<>();
     }
 
-    private static void doResponseOutOfTime(RequestExcutor request){
+    private static void doResponseOutOfTime(RequestExecutor request){
 
         try {
             RPCRspBase rspBase = request.reqBase.getRspMsg();
             rspBase.responseCode = RPCExceptionUtil.RequestOutOfTimeException;
 
-            ResponseExcutor response = new ResponseExcutor();
+            ResponseExecutor response = new ResponseExecutor();
             response.doResponse(rspBase);
 
             getAndRemoveRequest(rspBase);

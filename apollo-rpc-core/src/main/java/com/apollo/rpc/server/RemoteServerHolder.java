@@ -9,9 +9,7 @@ import com.apollo.rpc.comm.RemoteServerInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RemoteServerHolder {
 
@@ -62,7 +60,10 @@ public class RemoteServerHolder {
 
     private void updateServerList(Map<String,List<RemoteServerInfo>> serverMap){
         this.rpcAuthInfoMap.clear();
-        for(String serverName:servers.keySet()){
+        List<String> list = new ArrayList<>(servers.keySet());
+        Iterator<String> iterator = list.iterator();
+        while(iterator.hasNext()){
+            String serverName = iterator.next();
             if(serverMap.containsKey(serverName)){
                 updateServerInstanceList(serverName,serverMap.get(serverName));
             }else{

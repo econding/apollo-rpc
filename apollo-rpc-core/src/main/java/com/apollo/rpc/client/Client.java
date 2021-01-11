@@ -30,7 +30,7 @@ public class Client {
         if(channelInitializer == null){
             throw new NullPointerException("channelInitializer must not be null");
         }
-        EventLoopGroup group = null;
+        EventLoopGroup group;
         Channel channel = null;
         try {
             group = new NioEventLoopGroup();
@@ -43,7 +43,7 @@ public class Client {
             channel = f.channel();
 
         } catch (InterruptedException e) {
-
+            
         } finally {
 
         }

@@ -11,7 +11,7 @@ public class RPCExecutorService {
     private RPCExecutor rpcExecutor;
 
     public void init(RPCProperties properties){
-        int pps = properties.getInt(RPCProperties.permit_per_seconed, Default_Permit_Per_Second);
+        int pps = properties.getInt(RPCProperties.permit_per_second, Default_Permit_Per_Second);
         int ts = properties.getInt(RPCProperties.pool_size,Default_Thread_Size);
 
         limiter = new TokenBucketLimiter(pps);

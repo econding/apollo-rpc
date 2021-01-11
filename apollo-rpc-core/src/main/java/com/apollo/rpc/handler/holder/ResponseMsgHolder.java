@@ -22,4 +22,5 @@ public class ResponseMsgHolder<M extends RPCRspBase> implements MsgHolder<M>{
     public M getMsg() {
         return msg;
     }
+
 }

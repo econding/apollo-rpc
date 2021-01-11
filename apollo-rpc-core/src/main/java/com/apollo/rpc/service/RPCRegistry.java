@@ -11,7 +11,7 @@ import com.apollo.rpc.initializer.RPCChannelInitializer;
 import com.apollo.rpc.initializer.Server;
 import com.apollo.rpc.server.RemoteServerDiscovery;
 import com.apollo.rpc.server.RemoteServerHolder;
-import com.apollo.rpc.session.excutor.RequestMsgManager;
+import com.apollo.rpc.session.executor.RequestMsgManager;
 
 public class RPCRegistry {
 

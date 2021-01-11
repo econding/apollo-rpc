@@ -1,4 +1,4 @@
-package com.apollo.rpc.session.excutor;
+package com.apollo.rpc.session.executor;
 
 
 import com.apollo.rpc.exception.RemoteServerDisabledException;
@@ -8,7 +8,7 @@ import com.apollo.rpc.msg.RPCReqBase;
 import io.netty.channel.Channel;
 
 
-public class RequestExcutor<A extends RPCReqBase> extends RequestMsgManager {
+public class RequestExecutor<A extends RPCReqBase> extends RequestMsgManager {
 
     public A reqBase;
 

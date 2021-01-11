@@ -105,18 +105,18 @@ public class LoadBalancer {
      * 优先级更新方法,此方法使用需要加锁
      */
     private synchronized void updatePriority(){
-        TreeSet<Truple> prioritySet = new TreeSet<>();
+        TreeSet<Tuple> prioritySet = new TreeSet<>();
         for(int i=0;i<priority.size();i++){
             if(priority.get(i) != 0){
-                Truple truple = new Truple(i,times.get(i));
-                prioritySet.add(truple);
+                Tuple tuple = new Tuple(i, times.get(i));
+                prioritySet.add(tuple);
             }
         }
         int i = prioritySet.size();
-        Iterator<Truple> iterator = prioritySet.iterator();
+        Iterator<Tuple> iterator = prioritySet.iterator();
         while (iterator.hasNext()){
-            Truple truple = iterator.next();
-            priority.set(truple.index,i);
+            Tuple tuple = iterator.next();
+            priority.set(tuple.index,i);
             i--;
         }
         priorityMax = prioritySet.size();
@@ -125,21 +125,21 @@ public class LoadBalancer {
     /**
      * 响应时间与服务实例关联的二元组，用于优先级的排序
      */
-    private class Truple implements Comparable{
+    private class Tuple implements Comparable{
 
         int index;
         long time;
 
-        public Truple(int index,long time){
+        public Tuple(int index, long time){
             this.index = index;
             this.time = time;
         }
 
         @Override
         public int compareTo(Object o) {
-            if(this.time == ((Truple) o).time){
+            if(this.time == ((Tuple) o).time){
                 return 0;
-            }else if(this.time > ((Truple) o).time){
+            }else if(this.time > ((Tuple) o).time){
                 return 1;
             }else{
                 return -1;
