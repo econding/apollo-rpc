@@ -1,11 +1,12 @@
-package com.apollo.rpc.server;
+package com.apollo.rpc.remote;
 
 import com.apollo.rpc.comm.CommonUtil;
-import com.apollo.rpc.server.server.RemoteServer;
-import com.apollo.rpc.server.server.RemoteServerImpl;
+import com.apollo.rpc.remote.server.RemoteServer;
+import com.apollo.rpc.remote.server.RemoteServerImpl;
 
 import com.apollo.rpc.comm.Constant;
 import com.apollo.rpc.comm.RemoteServerInfo;
+import com.apollo.rpc.service.RPCTaskRunner;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -16,10 +17,9 @@ public class RemoteServerHolder {
     private static final Log log = LogFactory.getLog(RemoteServerHolder.class);
     private static final int Server_Update_Time = 1000;
 
-    private ChannelHolder channelHolder = null;
-    private Map<String,RemoteServer> servers = null;
-    private RemoteServerInfo remoteServerInfo = null;
-    private Map<String, RemoteServerInfo> rpcAuthInfoMap = null;
+    private ChannelHolder channelHolder;
+    private Map<String,RemoteServer> servers;
+    private Map<String, RemoteServerInfo> rpcAuthInfoMap;
     private RemoteServerDiscovery discovery = null;
 
     public RemoteServerHolder(){
@@ -31,7 +31,6 @@ public class RemoteServerHolder {
     }
 
     public void setRemoteServerInfo(RemoteServerInfo remoteServerInfo) {
-        this.remoteServerInfo = remoteServerInfo;
         channelHolder.setRemoteServerInfo(remoteServerInfo);
     }
 

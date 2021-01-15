@@ -1,19 +1,19 @@
 package com.apollo.rpc.service;
 
-import com.apollo.rpc.client.Client;
+import com.apollo.rpc.channel.Client;
 import com.apollo.rpc.client.proxy.RPCProxy;
 import com.apollo.rpc.comm.RPCProperties;
 import com.apollo.rpc.comm.RemoteServerInfo;
 import com.apollo.rpc.concurrent.RPCExecutorService;
 import com.apollo.rpc.handler.*;
-import com.apollo.rpc.initializer.RPCChannelHandler;
-import com.apollo.rpc.initializer.RPCChannelInitializer;
-import com.apollo.rpc.initializer.Server;
-import com.apollo.rpc.server.RemoteServerDiscovery;
-import com.apollo.rpc.server.RemoteServerHolder;
+import com.apollo.rpc.channel.RPCChannelInboundHandler;
+import com.apollo.rpc.channel.RPCChannelInitializer;
+import com.apollo.rpc.channel.Server;
+import com.apollo.rpc.remote.RemoteServerDiscovery;
+import com.apollo.rpc.remote.RemoteServerHolder;
 import com.apollo.rpc.session.executor.RequestMsgManager;
 
-public class RPCRegistry {
+public class RPCInitializer {
 
     private static final int default_timeout = 20 * 1000;
 
@@ -27,7 +27,7 @@ public class RPCRegistry {
 
     private RemoteServerDiscovery discovery;
 
-    public RPCRegistry(RPCProperties properties,RemoteServerDiscovery discovery){
+    public RPCInitializer(RPCProperties properties, RemoteServerDiscovery discovery){
         this.properties = properties;
         this.discovery = discovery;
         initService();
@@ -89,7 +89,7 @@ public class RPCRegistry {
 
     public void initChannelInitializer(){
         channelInitializer = new RPCChannelInitializer();
-        RPCChannelHandler.setDispatchService(dispatchService);
+        RPCChannelInboundHandler.setDispatchService(dispatchService);
     }
 
     public RemoteServerInfo getServerInfo(){

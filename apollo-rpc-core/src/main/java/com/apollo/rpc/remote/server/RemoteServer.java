@@ -1,4 +1,4 @@
-package com.apollo.rpc.server.server;
+package com.apollo.rpc.remote.server;
 
 import com.apollo.rpc.exception.RPCException;
 

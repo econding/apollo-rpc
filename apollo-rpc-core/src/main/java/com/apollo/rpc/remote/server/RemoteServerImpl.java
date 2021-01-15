@@ -1,12 +1,12 @@
-package com.apollo.rpc.server.server;
+package com.apollo.rpc.remote.server;
 
 import com.apollo.rpc.comm.Constant;
 import com.apollo.rpc.comm.RemoteServerInfo;
 import com.apollo.rpc.msg.impl.RPCRequestMsg;
-import com.apollo.rpc.server.ChannelHolder;
-import com.apollo.rpc.server.RemoteServerHolder;
-import com.apollo.rpc.server.instance.RemoteServerInstance;
-import com.apollo.rpc.server.instance.RemoteServerInstanceImpl;
+import com.apollo.rpc.remote.ChannelHolder;
+import com.apollo.rpc.remote.RemoteServerHolder;
+import com.apollo.rpc.remote.instance.RemoteServerInstance;
+import com.apollo.rpc.remote.instance.RemoteServerInstanceImpl;
 import com.apollo.rpc.exception.RPCException;
 import io.netty.channel.Channel;
 import org.apache.commons.logging.Log;

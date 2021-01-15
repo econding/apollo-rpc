@@ -1,9 +1,8 @@
 package com.apollo.rpc.client.proxy;
 
 import com.apollo.rpc.exception.NoSuchRemoteServerException;
-import com.apollo.rpc.exception.RPCException;
-import com.apollo.rpc.server.RemoteServerHolder;
-import com.apollo.rpc.server.server.RemoteServer;
+import com.apollo.rpc.remote.RemoteServerHolder;
+import com.apollo.rpc.remote.server.RemoteServer;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;

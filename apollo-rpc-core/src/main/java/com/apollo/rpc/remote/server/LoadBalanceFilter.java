@@ -1,12 +1,12 @@
-package com.apollo.rpc.server.server;
+package com.apollo.rpc.remote.server;
 
 import com.apollo.rpc.comm.CommonUtil;
 import com.apollo.rpc.exception.RPCException;
 import com.apollo.rpc.exception.ResponseOutOfTimeException;
 import com.apollo.rpc.msg.RPCReqBase;
 import com.apollo.rpc.msg.impl.RPCServerCheckReqMsg;
-import com.apollo.rpc.server.RPCTaskRunner;
-import com.apollo.rpc.server.instance.RemoteServerInstance;
+import com.apollo.rpc.service.RPCTaskRunner;
+import com.apollo.rpc.remote.instance.RemoteServerInstance;
 import com.apollo.rpc.exception.RemoteServerDisabledException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -135,7 +135,7 @@ public class LoadBalanceFilter extends RemoteServerInstanceHolder {
 
         private RemoteServerInstance instance;
 
-        private static final int checkingTime = 100;
+        private static final int checkingTime = 200;
 
         public ServerCheckingTask(RemoteServerInstance instance){
             this.instance = instance;

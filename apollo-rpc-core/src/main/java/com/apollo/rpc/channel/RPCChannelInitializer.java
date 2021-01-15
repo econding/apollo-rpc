@@ -1,11 +1,9 @@
-package com.apollo.rpc.initializer;
+package com.apollo.rpc.channel;
 
 import com.apollo.rpc.serializable.MarshallingCodeCFactory;
-import com.apollo.rpc.service.RPCDispatchService;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.group.ChannelGroup;
 
 
 public final class RPCChannelInitializer extends ChannelInitializer<Channel> {
@@ -16,7 +14,7 @@ public final class RPCChannelInitializer extends ChannelInitializer<Channel> {
         ChannelPipeline pipeline = ch.pipeline();
         pipeline.addLast(MarshallingCodeCFactory.buildMarshallingDecoder());
         pipeline.addLast(MarshallingCodeCFactory.buildMarshallingEncoder());
-        pipeline.addLast(new RPCChannelHandler());
+        pipeline.addLast(new RPCChannelInboundHandler());
 
     }
 

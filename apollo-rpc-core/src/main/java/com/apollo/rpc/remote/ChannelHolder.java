@@ -1,7 +1,7 @@
-package com.apollo.rpc.server;
+package com.apollo.rpc.remote;
 
 import com.apollo.rpc.msg.impl.RPCAuthReqMsg;
-import com.apollo.rpc.client.Client;
+import com.apollo.rpc.channel.Client;
 import com.apollo.rpc.comm.Constant;
 import com.apollo.rpc.comm.RemoteServerInfo;
 import com.apollo.rpc.exception.RPCException;

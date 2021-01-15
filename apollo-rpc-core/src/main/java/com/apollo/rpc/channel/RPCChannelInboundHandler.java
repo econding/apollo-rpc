@@ -1,4 +1,4 @@
-package com.apollo.rpc.initializer;
+package com.apollo.rpc.channel;
 
 import com.apollo.rpc.handler.holder.MsgHolder;
 import com.apollo.rpc.handler.holder.RequestMsgHolder;
@@ -13,10 +13,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.Serializable;
+import java.nio.channels.SocketChannel;
 
-public class RPCChannelHandler extends SimpleChannelInboundHandler<Serializable> {
+public class RPCChannelInboundHandler extends SimpleChannelInboundHandler<Serializable> {
 
-    private static final Log log = LogFactory.getLog(RPCChannelHandler.class);
+    private static final Log log = LogFactory.getLog(RPCChannelInboundHandler.class);
 
     private static RPCDispatchService dispatchService;
 
@@ -35,6 +36,16 @@ public class RPCChannelHandler extends SimpleChannelInboundHandler<Serializable>
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause){
         log.error("unchecked exception in ChannelHandler",cause);
+    }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx){
+
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx){
+
     }
 
     public MsgHolder getRequest(Serializable msg, Channel channel){

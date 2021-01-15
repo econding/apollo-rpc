@@ -3,9 +3,9 @@ package com.apollo.rpc.service;
 import com.apollo.rpc.comm.Constant;
 import com.apollo.rpc.comm.RemoteServerInfo;
 import com.apollo.rpc.msg.impl.RPCAuthReqMsg;
-import com.apollo.rpc.server.RemoteServerHolder;
-import com.apollo.rpc.server.instance.RemoteServerInstanceImpl;
-import com.apollo.rpc.server.server.RemoteServerImpl;
+import com.apollo.rpc.remote.RemoteServerHolder;
+import com.apollo.rpc.remote.instance.RemoteServerInstanceImpl;
+import com.apollo.rpc.remote.server.RemoteServerImpl;
 import io.netty.channel.Channel;
 
 public class AuthenticationService {

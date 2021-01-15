@@ -1,4 +1,4 @@
-package com.apollo.rpc.client;
+package com.apollo.rpc.channel;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;

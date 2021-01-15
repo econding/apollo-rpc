@@ -1,4 +1,4 @@
-package com.apollo.rpc.server;
+package com.apollo.rpc.service;
 
 import com.apollo.rpc.comm.Constant;
 

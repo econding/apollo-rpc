@@ -1,4 +1,4 @@
-package com.apollo.rpc.server.instance;
+package com.apollo.rpc.remote.instance;
 
 
 import com.apollo.rpc.msg.RPCReqBase;

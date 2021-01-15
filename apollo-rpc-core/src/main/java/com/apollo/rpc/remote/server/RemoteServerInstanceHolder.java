@@ -1,6 +1,6 @@
-package com.apollo.rpc.server.server;
+package com.apollo.rpc.remote.server;
 
-import com.apollo.rpc.server.instance.RemoteServerInstance;
+import com.apollo.rpc.remote.instance.RemoteServerInstance;
 
 import java.util.ArrayList;
 import java.util.List;

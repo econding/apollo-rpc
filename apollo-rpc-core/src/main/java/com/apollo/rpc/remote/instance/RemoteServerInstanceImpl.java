@@ -1,8 +1,8 @@
-package com.apollo.rpc.server.instance;
+package com.apollo.rpc.remote.instance;
 
 import com.apollo.rpc.comm.Constant;
 import com.apollo.rpc.msg.RPCReqBase;
-import com.apollo.rpc.server.RemoteServerHolder;
+import com.apollo.rpc.remote.RemoteServerHolder;
 import com.apollo.rpc.session.DefaultSessionFactory;
 import com.apollo.rpc.session.RpcSession;
 import io.netty.channel.Channel;
