@@ -4,10 +4,9 @@ import com.apollo.rpc.annotation.RpcService;
 import com.apollo.rpc.comm.RPCProperties;
 import com.apollo.rpc.config.PropertiesResolve;
 import com.apollo.rpc.discovery.CloudServerDiscovery;
-import com.apollo.rpc.service.RPCRegistry;
+import com.apollo.rpc.service.RPCInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +20,7 @@ public class RPCAutoConfiguration implements ApplicationListener<ContextRefreshe
     @Autowired
     private CloudServerDiscovery cloudServerDiscovery;
 
-    private RPCRegistry registry;
+    private RPCInitializer registry;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -32,13 +31,13 @@ public class RPCAutoConfiguration implements ApplicationListener<ContextRefreshe
 
     }
 
-    private RPCRegistry registerServer(Map<String, Object> servers){
+    private RPCInitializer registerServer(Map<String, Object> servers){
         RPCProperties properties = propertiesResolve.getProperties();
-        RPCRegistry rpcRegistry = new RPCRegistry(properties,cloudServerDiscovery);
+        RPCInitializer rpcInitializer = new RPCInitializer(properties,cloudServerDiscovery);
         for(Object server:servers.values()){
-            rpcRegistry.register(server.getClass().getSimpleName(),server);
+            rpcInitializer.register(server.getClass().getSimpleName(),server);
         }
-        return rpcRegistry;
+        return rpcInitializer;
     }
 
 }

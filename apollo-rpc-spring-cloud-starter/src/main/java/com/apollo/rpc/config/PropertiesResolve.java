@@ -47,9 +47,9 @@ public class PropertiesResolve {
             properties.setProperty(RPCProperties.pool_size,pool_size);
         }
 
-        String permit_per_seconed = environment.getProperty(RPCProperties.permit_per_seconed);
+        String permit_per_seconed = environment.getProperty(RPCProperties.permit_per_second);
         if(permit_per_seconed != null){
-            properties.setProperty(RPCProperties.permit_per_seconed,permit_per_seconed);
+            properties.setProperty(RPCProperties.permit_per_second,permit_per_seconed);
         }
 
         return properties;

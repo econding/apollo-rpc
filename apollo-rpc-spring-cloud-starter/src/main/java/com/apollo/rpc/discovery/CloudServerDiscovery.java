@@ -1,7 +1,7 @@
 package com.apollo.rpc.discovery;
 
 import com.apollo.rpc.comm.RemoteServerInfo;
-import com.apollo.rpc.server.RemoteServerDiscovery;
+import com.apollo.rpc.remote.RemoteServerDiscovery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;

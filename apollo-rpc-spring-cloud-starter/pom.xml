@@ -12,7 +12,7 @@
     <groupId>com.apollo</groupId>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
-    <artifactId>apollo-rpc-spring-clould-starter</artifactId>
+    <artifactId>apollo-rpc-spring-cloud-starter</artifactId>
     <version>0.0.1</version>
 
 
