@@ -38,16 +38,6 @@ public class RPCChannelInboundHandler extends SimpleChannelInboundHandler<Serial
         log.error("unchecked exception in ChannelHandler",cause);
     }
 
-    @Override
-    public void channelActive(ChannelHandlerContext ctx){
-
-    }
-
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx){
-
-    }
-
     public MsgHolder getRequest(Serializable msg, Channel channel){
         if(msg instanceof RPCReqBase){
             RPCReqBase rpcReqBase = (RPCReqBase)msg;

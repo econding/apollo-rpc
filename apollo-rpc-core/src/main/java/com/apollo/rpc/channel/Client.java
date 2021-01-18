@@ -4,6 +4,8 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.net.InetSocketAddress;
 
@@ -12,6 +14,7 @@ import java.net.InetSocketAddress;
  */
 public class Client {
 
+    private static final Log log = LogFactory.getLog(Client.class);
     private static ChannelInitializer channelInitializer;
     private final String host;
     private final int port;
@@ -43,7 +46,7 @@ public class Client {
             channel = f.channel();
 
         } catch (InterruptedException e) {
-            
+            log.error("unable to connect to the remote server:ip"+host+" port"+port);
         } finally {
 
         }

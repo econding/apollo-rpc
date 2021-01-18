@@ -35,12 +35,15 @@ public class CloudServerDiscovery implements RemoteServerDiscovery {
                 if(serverID.equals(serverName)){
                     continue;
                 }
-                List<RemoteServerInfo> serverInfos = new ArrayList<>();
                 List<ServiceInstance> serviceInstances = discoveryClient.getInstances(serverID);
+                if(serviceInstances.size() == 0){
+                    continue;
+                }
+                List<RemoteServerInfo> serverInfos = new ArrayList<>();
                 for(ServiceInstance serviceInstance:serviceInstances){
                     RemoteServerInfo serverInfo = new RemoteServerInfo();
-                    serverInfo.setAuthMsg(serviceInstance.getMetadata().get(auth));
                     serverInfo.setIp(serviceInstance.getHost());
+                    serverInfo.setAuthMsg(serviceInstance.getMetadata().get(auth));
                     serverInfo.setPort(serviceInstance.getMetadata().get(rpc_port));
                     serverInfo.setName(serverID);
                     serverInfos.add(serverInfo);

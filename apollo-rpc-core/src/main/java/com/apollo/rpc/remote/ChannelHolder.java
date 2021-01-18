@@ -1,5 +1,7 @@
 package com.apollo.rpc.remote;
 
+import com.apollo.rpc.comm.CommonUtil;
+import com.apollo.rpc.exception.ResponseOutOfTimeException;
 import com.apollo.rpc.msg.impl.RPCAuthReqMsg;
 import com.apollo.rpc.channel.Client;
 import com.apollo.rpc.comm.Constant;
@@ -30,12 +32,14 @@ public class ChannelHolder {
     public Channel doConnect(String ip,String port){
         if((remoteServerInfo.getIp()+Constant.separator+remoteServerInfo.getPort()).hashCode() < (ip+Constant.separator+port).hashCode()){
             Channel channel =  new Client(ip,Integer.parseInt(port)).connect();
-            if(doAuth(channel)){
-                addChannel(channel);
-                return channel;
+            if(channel != null){
+                if(doAuth(channel)){
+                    addChannel(channel);
+                    return channel;
+                }
+                log.error("Authentication failed ip="+ip+" port="+port);
             }
         }
-        log.error("Authentication failed ip="+ip+" port="+port);
         return null;
     }
 
@@ -52,7 +56,7 @@ public class ChannelHolder {
         RpcSession serverAuthSession = DefaultSessionFactory.instance.createSession(channel);
         try {
             serverAuthSession.doRequest(rpcAuthReqMsg);
-        } catch  (RPCException e) {
+        }catch  (RPCException e) {
             e.printStackTrace();
             return false;
         }

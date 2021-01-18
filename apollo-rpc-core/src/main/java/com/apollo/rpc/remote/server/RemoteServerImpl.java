@@ -52,6 +52,7 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
     public void destroy() {
         for(RemoteServerInstance instance:super.instances){
             RemoteServerInstanceImpl instanceImpl = (RemoteServerInstanceImpl)instance;
+            instanceImpl.destroy();
             channelHolder.removeChannel(instanceImpl.getChannel());
         }
         super.destroy();

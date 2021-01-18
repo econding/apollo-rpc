@@ -16,4 +16,6 @@ public interface RemoteServerInstance {
 
     Object doRequest(RPCReqBase reqBase);
 
+    boolean isActive();
+
 }

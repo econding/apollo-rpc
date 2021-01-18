@@ -16,6 +16,7 @@ public class RemoteServerInstanceImpl implements RemoteServerInstance{
     private static final Log log = LogFactory.getLog(RemoteServerHolder.class);
 
     private Channel channel;
+    private boolean active = false;
 
     private String ip;
     private String port;
@@ -44,9 +45,23 @@ public class RemoteServerInstanceImpl implements RemoteServerInstance{
         return session.doRequest(reqBase);
     }
 
+    @Override
+    public boolean isActive() {
+        return active;
+    }
+
     public void active(Channel channel) {
+        this.active = true;
         log.info(this.toString()+"has been initialized");
         this.channel = channel;
+    }
+
+    public void destroy(){
+        this.active = false;
+        if(channel.isActive()){
+            channel.close();
+        }
+        this.channel.close();
     }
 
     public RemoteServerInstanceImpl(String ip,String port,String serverName){
