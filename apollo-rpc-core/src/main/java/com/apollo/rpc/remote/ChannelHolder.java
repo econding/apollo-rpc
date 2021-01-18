@@ -1,7 +1,5 @@
 package com.apollo.rpc.remote;
 
-import com.apollo.rpc.comm.CommonUtil;
-import com.apollo.rpc.exception.ResponseOutOfTimeException;
 import com.apollo.rpc.msg.impl.RPCAuthReqMsg;
 import com.apollo.rpc.channel.Client;
 import com.apollo.rpc.comm.Constant;
@@ -30,17 +28,31 @@ public class ChannelHolder {
     }
 
     public Channel doConnect(String ip,String port){
-        if((remoteServerInfo.getIp()+Constant.separator+remoteServerInfo.getPort()).hashCode() < (ip+Constant.separator+port).hashCode()){
-            Channel channel =  new Client(ip,Integer.parseInt(port)).connect();
-            if(channel != null){
-                if(doAuth(channel)){
-                    addChannel(channel);
-                    return channel;
-                }
-                log.error("Authentication failed ip="+ip+" port="+port);
+        Channel channel =  new Client(ip,Integer.parseInt(port)).connect();
+        if(channel != null){
+            if(doAuth(channel)){
+                addChannel(channel);
+                return channel;
             }
+            log.error("Authentication failed ip="+ip+" port="+port);
         }
         return null;
+    }
+
+    /**
+     * 根据hashcode来决定本服务作为netty的客户端还是服务端
+     * @param ip
+     * @param port
+     * @return
+     */
+    public boolean isClient(String ip,String port){
+        if(remoteServerInfo.getIp().hashCode() > ip.hashCode()){
+            return true;
+        }else if(remoteServerInfo.getIp().hashCode() == ip.hashCode()){
+            return remoteServerInfo.getPort().hashCode() > port.hashCode();
+        }else{
+            return false;
+        }
     }
 
     private boolean doAuth(Channel channel){

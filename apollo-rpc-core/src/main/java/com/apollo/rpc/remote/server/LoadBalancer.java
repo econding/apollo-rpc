@@ -1,7 +1,7 @@
 package com.apollo.rpc.remote.server;
 
-import com.apollo.rpc.service.RPCTaskRunner;
-import com.apollo.rpc.comm.CommonUtil;
+import com.apollo.rpc.task.RPCScheduledRunnable;
+import com.apollo.rpc.task.RPCTaskRunner;
 
 import java.util.*;
 
@@ -33,7 +33,7 @@ public class LoadBalancer {
     }
 
     public void start(){
-        RPCTaskRunner.execute(new PriorityUpdateRunner());
+        RPCTaskRunner.execute(new PriorityUpdateRunner(),priority_update_time);
     }
 
     public int get(){
@@ -54,13 +54,13 @@ public class LoadBalancer {
         return priority.get(index);
     }
 
-    public void add(){
+    public synchronized void add(){
         priority.add(priority.size(),0);
         times.add(times.size(),Long.MAX_VALUE);
         lastTime.add(lastTime.size(),System.currentTimeMillis());
     }
 
-    public void remove(int index){
+    public synchronized void remove(int index){
         priority.remove(index);
         times.remove(index);
         lastTime.remove(index);
@@ -91,12 +91,13 @@ public class LoadBalancer {
     /**
      * 更新优先级的内部Runner
      */
-    private class PriorityUpdateRunner implements Runnable{
+    private class PriorityUpdateRunner extends RPCScheduledRunnable {
         @Override
         public void run() {
-            while(registered){
+            if(registered){
                 updatePriority();
-                CommonUtil.sleep(priority_update_time);
+            }else{
+                cancel();//取消任务
             }
         }
     }

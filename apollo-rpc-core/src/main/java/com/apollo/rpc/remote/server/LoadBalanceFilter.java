@@ -1,11 +1,12 @@
 package com.apollo.rpc.remote.server;
 
-import com.apollo.rpc.comm.CommonUtil;
 import com.apollo.rpc.exception.RPCException;
+import com.apollo.rpc.exception.RemoteServerLimitException;
 import com.apollo.rpc.exception.ResponseOutOfTimeException;
 import com.apollo.rpc.msg.RPCReqBase;
 import com.apollo.rpc.msg.impl.RPCServerCheckReqMsg;
-import com.apollo.rpc.service.RPCTaskRunner;
+import com.apollo.rpc.task.RPCScheduledRunnable;
+import com.apollo.rpc.task.RPCTaskRunner;
 import com.apollo.rpc.remote.instance.RemoteServerInstance;
 import com.apollo.rpc.exception.RemoteServerDisabledException;
 import org.apache.commons.logging.Log;
@@ -19,6 +20,7 @@ import java.util.concurrent.locks.StampedLock;
 public class LoadBalanceFilter extends RemoteServerInstanceHolder {
 
     private Log log = LogFactory.getLog(LoadBalanceFilter.class);
+    private static final int checkingTime = 200;
 
     private LoadBalancer balancer;
     private StampedLock stampedLock;//高性能读写锁
@@ -80,7 +82,7 @@ public class LoadBalanceFilter extends RemoteServerInstanceHolder {
         int index = super.getIndex(instance);
         balancer.active(index);
         log.info(instance.toString()+" has been activated");
-        RPCTaskRunner.execute(new ServerCheckingTask(instance));
+        RPCTaskRunner.execute(new ServerCheckingTask(instance),checkingTime);
     }
 
     public void requestOutOfTime(RemoteServerInstance instance){
@@ -131,11 +133,9 @@ public class LoadBalanceFilter extends RemoteServerInstanceHolder {
     /**
      * 服务可用性检测异步任务
      */
-    private class ServerCheckingTask implements Runnable{
+    private class ServerCheckingTask extends RPCScheduledRunnable {
 
         private RemoteServerInstance instance;
-
-        private static final int checkingTime = 200;
 
         public ServerCheckingTask(RemoteServerInstance instance){
             this.instance = instance;
@@ -143,11 +143,12 @@ public class LoadBalanceFilter extends RemoteServerInstanceHolder {
 
         @Override
         public void run() {
-            while(registered || instance.isActive()){
+            if(registered || instance.isActive()){
                 if(getIndex(instance) >= 0){//实例仍然存在
                     checking();
-                    CommonUtil.sleep(checkingTime);
                 }
+            }else{
+                cancel();//取消任务
             }
         }
 
@@ -158,6 +159,9 @@ public class LoadBalanceFilter extends RemoteServerInstanceHolder {
                 setTime(instance,checkingReqMsg.rspBase.responseTime,checkingReqMsg.requestTime);
             }catch (ResponseOutOfTimeException e){
                 log.info("instance unavailable:" + instance.toString());
+                requestOutOfTime(instance);
+            }catch (RemoteServerLimitException e){
+                log.info("the RemoteServer is busy:" + instance.toString());
                 requestOutOfTime(instance);
             }catch (RPCException e){
                 log.error("unchecked exception",e);

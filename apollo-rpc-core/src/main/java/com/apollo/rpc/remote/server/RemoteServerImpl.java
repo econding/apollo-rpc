@@ -1,5 +1,6 @@
 package com.apollo.rpc.remote.server;
 
+import com.apollo.rpc.comm.CommonUtil;
 import com.apollo.rpc.comm.Constant;
 import com.apollo.rpc.comm.RemoteServerInfo;
 import com.apollo.rpc.msg.impl.RPCRequestMsg;
@@ -8,6 +9,8 @@ import com.apollo.rpc.remote.RemoteServerHolder;
 import com.apollo.rpc.remote.instance.RemoteServerInstance;
 import com.apollo.rpc.remote.instance.RemoteServerInstanceImpl;
 import com.apollo.rpc.exception.RPCException;
+import com.apollo.rpc.task.RPCScheduledRunnable;
+import com.apollo.rpc.task.RPCTaskRunner;
 import io.netty.channel.Channel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -63,8 +66,11 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
     }
 
     public void removeInstance(RemoteServerInstance instance){
-        super.removeInstance(instance);
-        log.info(instance.toString()+" has been de-registered");
+        RemoteServerInstanceImpl remoteServerInstanceImpl = (RemoteServerInstanceImpl)instance;
+        remoteServerInstanceImpl.destroy();
+        channelHolder.removeChannel(remoteServerInstanceImpl.getChannel());
+        super.removeInstance(remoteServerInstanceImpl);
+        log.info(remoteServerInstanceImpl.toString()+" has been de-registered");
     }
 
     public RemoteServerInstance newInstance(String ip, String port) {
@@ -87,18 +93,42 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
             }
             if(!isExist){//删除已过期的实例
                 removeInstance(instance);
-                channelHolder.removeChannel(instance.getChannel());
             }
         }
         //添加新的实例
         for(RemoteServerInfo serverInfo:serverList){
             RemoteServerInstanceImpl instance = (RemoteServerInstanceImpl)newInstance(serverInfo.getIp(),serverInfo.getPort());
-            Channel channel = channelHolder.doConnect(instance.getIp(),instance.getPort());
-            if(channel != null){
-                instance.active(channel);
-                active(instance);
+            if(channelHolder.isClient(instance.getIp(),instance.getPort())){//客戶端需要主动发起连接
+                RPCTaskRunner.execute(new ChannelConnectTask(instance));
             }
         }
     }
 
+    /**
+     * Channel连接异步任务
+     */
+    private class ChannelConnectTask extends RPCScheduledRunnable {
+
+        RemoteServerInstanceImpl instance;
+
+        public ChannelConnectTask(RemoteServerInstanceImpl instance){
+            this.instance = instance;
+        }
+
+        @Override
+        public void run() {
+
+            Channel channel = null;
+
+            while(channel == null && instances.contains(instance)){
+                channel = channelHolder.doConnect(instance.getIp(),instance.getPort());
+                if(channel != null){
+                    instance.active(channel);
+                    active(instance);
+                    return;
+                }
+                CommonUtil.sleep(500);
+            }
+        }
+    }
 }

@@ -57,11 +57,13 @@ public class RemoteServerInstanceImpl implements RemoteServerInstance{
     }
 
     public void destroy(){
-        this.active = false;
-        if(channel.isActive()){
-            channel.close();
+        if(active){
+            this.active = false;
+            if(channel.isActive()){
+                channel.close();
+            }
+            this.channel.close();
         }
-        this.channel.close();
     }
 
     public RemoteServerInstanceImpl(String ip,String port,String serverName){
