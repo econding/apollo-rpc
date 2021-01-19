@@ -15,7 +15,6 @@
     <artifactId>apollo-rpc-spring-cloud-starter</artifactId>
     <version>0.0.1</version>
 
-
     <dependencies>
         <dependency>
             <groupId>com.apollo</groupId>

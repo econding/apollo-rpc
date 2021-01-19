@@ -93,6 +93,10 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
             }
             if(!isExist){//删除已过期的实例
                 removeInstance(instance);
+            }else{
+                if(instance.getChannel() != null && !instance.getChannel().isActive()){//如果Channel被关闭，则直接删除对应的实例
+                    removeInstance(instance);
+                }
             }
         }
         //添加新的实例
@@ -117,9 +121,7 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
 
         @Override
         public void run() {
-
             Channel channel = null;
-
             while(channel == null && instances.contains(instance)){
                 channel = channelHolder.doConnect(instance.getIp(),instance.getPort());
                 if(channel != null){

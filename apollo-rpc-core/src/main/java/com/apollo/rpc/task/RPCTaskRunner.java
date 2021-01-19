@@ -16,13 +16,13 @@ public class RPCTaskRunner{
      * @param command
      * @param rate
      */
-    public static void execute(RPCScheduledRunnable command,long rate) {
+    public static void schedule(RPCScheduledRunnable command, long rate) {
         Future future = executor.scheduleAtFixedRate(command,0,rate, TimeUnit.MILLISECONDS);
         command.setFuture(future);
     }
 
     /**
-     * 普通调度
+     * 普通执行
      * @param command
      */
     public static void execute(RPCScheduledRunnable command) {

@@ -33,7 +33,7 @@ public class LoadBalancer {
     }
 
     public void start(){
-        RPCTaskRunner.execute(new PriorityUpdateRunner(),priority_update_time);
+        RPCTaskRunner.schedule(new PriorityUpdateRunner(),priority_update_time);
     }
 
     public int get(){

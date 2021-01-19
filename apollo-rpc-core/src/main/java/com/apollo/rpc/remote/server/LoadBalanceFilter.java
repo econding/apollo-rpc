@@ -82,7 +82,7 @@ public class LoadBalanceFilter extends RemoteServerInstanceHolder {
         int index = super.getIndex(instance);
         balancer.active(index);
         log.info(instance.toString()+" has been activated");
-        RPCTaskRunner.execute(new ServerCheckingTask(instance),checkingTime);
+        RPCTaskRunner.schedule(new ServerCheckingTask(instance),checkingTime);
     }
 
     public void requestOutOfTime(RemoteServerInstance instance){

@@ -49,7 +49,7 @@ public class RemoteServerHolder {
     public void setDiscovery(RemoteServerDiscovery discovery) {
         this.discovery = discovery;
         ServerUpdater serverUpdater = new ServerUpdater();
-        RPCTaskRunner.execute(serverUpdater,Server_Update_Time);
+        RPCTaskRunner.schedule(serverUpdater,Server_Update_Time);
     }
 
     public synchronized void getServerInfo(){
