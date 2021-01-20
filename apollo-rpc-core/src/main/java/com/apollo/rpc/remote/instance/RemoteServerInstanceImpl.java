@@ -16,6 +16,7 @@ public class RemoteServerInstanceImpl implements RemoteServerInstance{
     private static final Log log = LogFactory.getLog(RemoteServerHolder.class);
 
     private Channel channel;
+
     private boolean active = false;
 
     private String ip;
@@ -48,6 +49,11 @@ public class RemoteServerInstanceImpl implements RemoteServerInstance{
     @Override
     public boolean isActive() {
         return active;
+    }
+
+    @Override
+    public void inActive() {
+        this.active = false;
     }
 
     public void active(Channel channel) {

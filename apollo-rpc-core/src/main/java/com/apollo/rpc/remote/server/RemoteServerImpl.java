@@ -95,7 +95,7 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
                 removeInstance(instance);
             }else{
                 if(instance.getChannel() != null && !instance.getChannel().isActive()){//如果Channel被关闭，则直接删除对应的实例
-                    removeInstance(instance);
+                    instance.inActive();
                 }
             }
         }
@@ -127,6 +127,7 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
                 if(channel != null){
                     instance.active(channel);
                     active(instance);
+                    channelHolder.addChannel(channel,instance);
                     return;
                 }
                 CommonUtil.sleep(500);

@@ -10,7 +10,7 @@ public class ResponseOutOfTimeException extends RPCException {
 
     public ResponseOutOfTimeException(RPCRspBase rpcRspBase){
 
-        super("ResponseOutOfTime: serverInstace="+rpcRspBase.instanceName);
+        super("ResponseOutOfTime: serverInstance="+rpcRspBase.instanceName);
     }
 
 }

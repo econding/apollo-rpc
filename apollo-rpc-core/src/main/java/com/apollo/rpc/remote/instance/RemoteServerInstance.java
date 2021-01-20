@@ -18,4 +18,5 @@ public interface RemoteServerInstance {
 
     boolean isActive();
 
+    void inActive();
 }

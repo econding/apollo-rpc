@@ -5,14 +5,15 @@ import com.apollo.rpc.channel.Client;
 import com.apollo.rpc.comm.Constant;
 import com.apollo.rpc.comm.RemoteServerInfo;
 import com.apollo.rpc.exception.RPCException;
+import com.apollo.rpc.remote.instance.RemoteServerInstance;
 import com.apollo.rpc.session.DefaultSessionFactory;
 import com.apollo.rpc.session.RpcSession;
 import io.netty.channel.Channel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Channel认证管理
@@ -20,18 +21,17 @@ import java.util.List;
 public class ChannelHolder {
 
     private final static Log log = LogFactory.getLog(ChannelHolder.class);
-    private List<Channel> channelList;
+    private Map<Channel, RemoteServerInstance> channelMap;
     private RemoteServerInfo remoteServerInfo = null;
 
     public ChannelHolder(){
-        channelList = new ArrayList<>();
+        channelMap = new HashMap<>();
     }
 
     public Channel doConnect(String ip,String port){
         Channel channel =  new Client(ip,Integer.parseInt(port)).connect();
         if(channel != null){
             if(doAuth(channel)){
-                addChannel(channel);
                 return channel;
             }
             log.error("Authentication failed ip="+ip+" port="+port);
@@ -76,19 +76,19 @@ public class ChannelHolder {
     }
 
     public boolean isAuth(Channel channel){
-        return channelList.contains(channel);
+        return channelMap.containsKey(channel);
     }
 
     public void setRemoteServerInfo(RemoteServerInfo remoteServerInfo) {
         this.remoteServerInfo = remoteServerInfo;
     }
 
-    public synchronized void addChannel(Channel channel){
-        this.channelList.add(channel);
+    public synchronized void addChannel(Channel channel,RemoteServerInstance instance){
+        this.channelMap.put(channel,instance);
     }
 
     public synchronized void removeChannel(Channel channel){
-        this.channelList.remove(channel);
+        this.channelMap.remove(channel);
     }
 
 }

@@ -30,7 +30,7 @@ public class AuthenticationService {
                 if(doAuth(rpcAuthReqMsg)){
                     instance.active(channel);
                     remoteServer.active(instance);
-                    remoteServerHolder.getChannelHolder().addChannel(channel);
+                    remoteServerHolder.getChannelHolder().addChannel(channel,instance);
                     return true;
                 }
             }else{
