@@ -143,7 +143,7 @@ public class LoadBalanceFilter extends RemoteServerInstanceHolder {
 
         @Override
         public void run() {
-            if(registered || instance.isActive()){
+            if(registered && instance.isActive()){
                 if(getIndex(instance) >= 0){//实例仍然存在
                     checking();
                 }
