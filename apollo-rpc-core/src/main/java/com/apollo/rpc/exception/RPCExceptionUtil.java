@@ -7,42 +7,32 @@ import com.apollo.rpc.msg.impl.RPCResponseMsg;
 
 public class RPCExceptionUtil {
 
-    public static final int NoSuchRemoteServerException = 1;
-    public static final int RemoteServerDisabledException = 2;
+    /**远程方法执行异常*/
+    public static final int RemoteMethodInvocationException = 1;
 
-    public static final int IllegalAccessException = 3;
-    public static final int RpcInvocationTargetException = 4;
-    public static final int NoSuchMethodException = 5;
-    public static final int RequestOutOfTimeException = 6;
-    public static final int AuthenticationFailureException = 7;
-    public static final int NoAuthorizedException = 8;
-    public static final int RemoteServerLimitException = 9;
-    public static final int NoSuchServiceException = 10;
-
+    public static final int RequestOutOfTimeException = 2;
+    public static final int AuthenticationFailureException = 3;
+    public static final int NoAuthorizedException = 4;
+    public static final int RemoteServerLimitException = 5;
+    public static final int NoSuchServiceException = 6;
 
     public static RPCException throwException(RPCRspBase rpcRspBase){
-
         int code = rpcRspBase.responseCode;
-
-        if(IllegalAccessException == code){
-            return new RPCMethodIllegalAccessException((RPCResponseMsg)rpcRspBase);
-        }else if(NoSuchMethodException == code){
-            return new NoSuchRPCMethodException((RPCResponseMsg)rpcRspBase);
-        }else if(RpcInvocationTargetException == code){
-            return new RPCInvocationTargetException((RPCResponseMsg)rpcRspBase);
-        }else if(AuthenticationFailureException == code){
-            return new AuthenticationFailureException((RPCAuthRspMsg) rpcRspBase);
-        }else if(RequestOutOfTimeException == code){
-            return new ResponseOutOfTimeException(rpcRspBase);
-        }else if(NoAuthorizedException == code){
-            return new NotAuthorizedException(rpcRspBase);
-        }else if(RemoteServerLimitException == code){
-            return new RemoteServerLimitException(rpcRspBase);
-        }else if(NoSuchServiceException == code){
-            return new NoSuchServiceException((RPCResponseMsg)rpcRspBase);
-        }else{
-            return new ResponseCodeErrorException(rpcRspBase);
+        switch(code) {
+            case RemoteMethodInvocationException: return getException(rpcRspBase);
+            case AuthenticationFailureException: return new AuthenticationFailureException((RPCAuthRspMsg) rpcRspBase);
+            case RequestOutOfTimeException: return new ResponseOutOfTimeException(rpcRspBase);
+            case NoAuthorizedException: return new NotAuthorizedException(rpcRspBase);
+            case RemoteServerLimitException: return new RemoteServerLimitException(rpcRspBase);
+            case NoSuchServiceException: return new NoSuchServiceException((RPCResponseMsg)rpcRspBase);
+            default: return new ResponseCodeErrorException(rpcRspBase);
         }
+    }
+
+    public static RPCException getException(RPCRspBase rpcRspBase){
+        RPCException rpcException = new RPCException();
+        rpcException.addSuppressed(rpcRspBase.exception);
+        return rpcException;
     }
 
 }

@@ -6,8 +6,6 @@ import com.apollo.rpc.invocation.RPCMethodInvocation;
 import com.apollo.rpc.msg.impl.RPCRequestMsg;
 import com.apollo.rpc.msg.impl.RPCResponseMsg;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * 执行骨架
  */
@@ -26,20 +24,15 @@ public class RPCSkeleton implements Runnable{
     }
 
     public void doService(){
+        RPCResponseMsg responseMsg = requestMsgHolder.getMsg().getRspMsg();
         Object res = null;
-        int responseCode = 0;
         try {
             res = invocation.invokeMethod(requestMsgHolder.getMsg());
-        } catch (IllegalAccessException e) {
-            responseCode = RPCExceptionUtil.IllegalAccessException;
-        } catch (InvocationTargetException e) {
-            responseCode = RPCExceptionUtil.RpcInvocationTargetException;
-        } catch (NoSuchMethodException e) {
-            responseCode = RPCExceptionUtil.NoSuchMethodException;
+        }  catch (Exception e){
+            responseMsg.responseCode = RPCExceptionUtil.RemoteMethodInvocationException;
+            responseMsg.exception = e;
         }
-        RPCResponseMsg responseMsg = requestMsgHolder.getMsg().getRspMsg();
         responseMsg.responseParameter = res;
-        responseMsg.responseCode = responseCode;
         requestMsgHolder.sendResponse(responseMsg);
     }
 

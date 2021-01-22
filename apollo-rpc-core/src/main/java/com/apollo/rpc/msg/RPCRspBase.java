@@ -3,16 +3,16 @@ package com.apollo.rpc.msg;
 
 public abstract class RPCRspBase<T extends RPCReqBase> extends MsgBase {
 
-    /**
-     * 响应代码
-     */
-    public int responseCode = 0;
+    /*** 响应代码 */
+    public int responseCode;
 
-    public long responseTime = 0l;
+    /*** 响应时间 */
+    public long responseTime;
 
-    /**
-     * 返回参数
-     */
+    /*** 错误信息 */
+    public Throwable exception;
+
+    /*** 返回参数*/
     public Object responseParameter = null;
 
     /**
