@@ -1,4 +1,4 @@
-package com.apollo.rpc.client.proxy;
+package com.apollo.rpc.proxy;
 
 import java.lang.reflect.Proxy;
 

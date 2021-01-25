@@ -1,4 +1,4 @@
-package com.apollo.rpc.client.proxy;
+package com.apollo.rpc.proxy;
 
 import com.apollo.rpc.exception.NoSuchRemoteServerException;
 import com.apollo.rpc.remote.RemoteServerHolder;

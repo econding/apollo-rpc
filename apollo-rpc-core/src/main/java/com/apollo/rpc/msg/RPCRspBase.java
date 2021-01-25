@@ -1,6 +1,8 @@
 package com.apollo.rpc.msg;
 
 
+import com.apollo.rpc.exception.RPCException;
+
 public abstract class RPCRspBase<T extends RPCReqBase> extends MsgBase {
 
     /*** 响应代码 */
@@ -10,7 +12,7 @@ public abstract class RPCRspBase<T extends RPCReqBase> extends MsgBase {
     public long responseTime;
 
     /*** 错误信息 */
-    public Throwable exception;
+    public RPCException exception;
 
     /*** 返回参数*/
     public Object responseParameter = null;

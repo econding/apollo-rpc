@@ -30,9 +30,7 @@ public class RPCExceptionUtil {
     }
 
     public static RPCException getException(RPCRspBase rpcRspBase){
-        RPCException rpcException = new RPCException();
-        rpcException.addSuppressed(rpcRspBase.exception);
-        return rpcException;
+        return new RemoteMethodInvocationException("the remote server has reported an error: "+rpcRspBase.instanceName,rpcRspBase.exception);
     }
 
 }

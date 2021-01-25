@@ -1,5 +1,6 @@
 package com.apollo.rpc.concurrent;
 
+import com.apollo.rpc.exception.RPCException;
 import com.apollo.rpc.exception.RPCExceptionUtil;
 import com.apollo.rpc.handler.holder.RequestMsgHolder;
 import com.apollo.rpc.invocation.RPCMethodInvocation;
@@ -30,7 +31,8 @@ public class RPCSkeleton implements Runnable{
             res = invocation.invokeMethod(requestMsgHolder.getMsg());
         }  catch (Exception e){
             responseMsg.responseCode = RPCExceptionUtil.RemoteMethodInvocationException;
-            responseMsg.exception = e;
+            RPCException rpcException = new RPCException(e);
+            responseMsg.exception = rpcException;
         }
         responseMsg.responseParameter = res;
         requestMsgHolder.sendResponse(responseMsg);

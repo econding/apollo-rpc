@@ -1,7 +1,7 @@
 package com.apollo.rpc.service;
 
 import com.apollo.rpc.channel.Client;
-import com.apollo.rpc.client.proxy.RPCProxy;
+import com.apollo.rpc.proxy.RPCProxy;
 import com.apollo.rpc.comm.RPCProperties;
 import com.apollo.rpc.comm.RemoteServerInfo;
 import com.apollo.rpc.concurrent.RPCExecutorService;
