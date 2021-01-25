@@ -1,7 +1,7 @@
 package com.apollo.rpc.handler;
 
 import com.apollo.rpc.concurrent.RPCExecutorService;
-import com.apollo.rpc.exception.RPCExceptionUtil;
+import com.apollo.rpc.exception.RPCException;
 import com.apollo.rpc.handler.holder.RequestMsgHolder;
 import com.apollo.rpc.concurrent.RPCSkeleton;
 import com.apollo.rpc.invocation.RPCMethodInvocation;
@@ -22,12 +22,12 @@ public class RPCRequestMsgHandler implements RPCMsgHandler<RequestMsgHolder<RPCR
     public void doHandle(RequestMsgHolder<RPCRequestMsg> requestMsgHolder) {
         RPCSkeleton rpcSkeleton = getRpcSkeleton(requestMsgHolder);
         if(rpcSkeleton == null){
-            requestMsgHolder.sendResponse(RPCExceptionUtil.NoSuchServiceException);
+            requestMsgHolder.sendResponse(RPCException.NoSuchServiceException);
             return;
         }
         boolean run = this.executorService.execute(rpcSkeleton);
         if(!run){
-            requestMsgHolder.sendResponse(RPCExceptionUtil.RemoteServerLimitException);
+            requestMsgHolder.sendResponse(RPCException.RemoteServerLimitException);
         }
     }
 

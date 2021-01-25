@@ -3,7 +3,6 @@ package com.apollo.rpc.session.executor;
 
 import com.apollo.rpc.exception.RemoteServerDisabledException;
 import com.apollo.rpc.exception.RPCException;
-import com.apollo.rpc.exception.RPCExceptionUtil;
 import com.apollo.rpc.msg.RPCReqBase;
 import io.netty.channel.Channel;
 
@@ -25,7 +24,7 @@ public class RequestExecutor<A extends RPCReqBase> extends RequestMsgManager {
             waiting(reqBase);
 
             if(reqBase.rspBase.responseCode != 0){
-                throw RPCExceptionUtil.throwException(reqBase.rspBase);
+                throw RPCException.throwException(reqBase.rspBase);
             }
 
         }else{

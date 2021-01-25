@@ -1,7 +1,7 @@
 package com.apollo.rpc.handler;
 
 import com.apollo.rpc.concurrent.RPCExecutorService;
-import com.apollo.rpc.exception.RPCExceptionUtil;
+import com.apollo.rpc.exception.RPCException;
 import com.apollo.rpc.handler.holder.RequestMsgHolder;
 import com.apollo.rpc.msg.impl.RPCServerCheckReqMsg;
 
@@ -18,7 +18,7 @@ public class RPCServerCheckReqMsgHandler implements RPCMsgHandler<RequestMsgHold
         Check check = new Check(requestMsgHolder);
         boolean run = this.executorService.execute(check);
         if(!run){
-            requestMsgHolder.sendResponse(RPCExceptionUtil.RemoteServerLimitException);
+            requestMsgHolder.sendResponse(RPCException.RemoteServerLimitException);
         }
     }
 

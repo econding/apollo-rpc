@@ -1,7 +1,7 @@
 package com.apollo.rpc.session.executor;
 
 
-import com.apollo.rpc.exception.RPCExceptionUtil;
+import com.apollo.rpc.exception.RPCException;
 import com.apollo.rpc.msg.RPCReqBase;
 import com.apollo.rpc.msg.RPCRspBase;
 
@@ -97,7 +97,7 @@ public class RequestMsgManager {
 
         try {
             RPCRspBase rspBase = request.reqBase.getRspMsg();
-            rspBase.responseCode = RPCExceptionUtil.RequestOutOfTimeException;
+            rspBase.responseCode = RPCException.RequestOutOfTimeException;
 
             ResponseExecutor response = new ResponseExecutor();
             response.doResponse(rspBase);
