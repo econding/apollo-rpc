@@ -41,7 +41,7 @@ public class RPCMethodInvocation {
             return methodT.invoke(service,arg);
         }
 
-        throw  new NoSuchMethodException();
+        throw new NoSuchMethodException();
     }
 
     public Class getClazzForBaseType(Class clazz){

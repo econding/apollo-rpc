@@ -14,7 +14,7 @@ public interface RemoteServerInstance {
 
     String getServerName();
 
-    Object doRequest(RPCReqBase reqBase);
+    Object invoke(RPCReqBase reqBase);
 
     boolean isActive();
 

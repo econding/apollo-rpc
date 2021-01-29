@@ -4,6 +4,6 @@ import com.apollo.rpc.msg.RPCReqBase;
 
 public interface RpcSession {
 
-    <T extends RPCReqBase> Object doRequest(T t);
+    <T extends RPCReqBase> Object request(T t);
 
 }

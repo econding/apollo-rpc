@@ -67,7 +67,7 @@ public class ChannelHolder {
 
         RpcSession serverAuthSession = DefaultSessionFactory.instance.createSession(channel);
         try {
-            serverAuthSession.doRequest(rpcAuthReqMsg);
+            serverAuthSession.request(rpcAuthReqMsg);
         }catch  (RPCException e) {
             e.printStackTrace();
             return false;

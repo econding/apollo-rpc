@@ -8,7 +8,8 @@ import java.util.*;
 /**
  * 负载均衡器
  * 基于优先级的负载均衡算法
- * 优先级取决于当前服务实例最新响应时间（从发送请求到接受应答所花费的时间，减去服务实例代码执行时间），时间越短优先级越高
+ * 优先级取决于远程服务实例对心跳包的最新响应时间，时间越短优先级越高
+ * 非线程安全类
  */
 public class LoadBalancer {
 
@@ -36,6 +37,10 @@ public class LoadBalancer {
         RPCTaskRunner.schedule(new PriorityUpdateRunner(),priority_update_time);
     }
 
+    /**
+     * 根据优先级算法，产生一个序号
+     * @return
+     */
     public int get(){
         if(priorityMax == 0){
             return -1;
@@ -50,16 +55,28 @@ public class LoadBalancer {
         return -1;
     }
 
+    /**
+     * 获取特定序号的优先级
+     * @param index
+     * @return
+     */
     public int getPriority(int index){
         return priority.get(index);
     }
 
+    /**
+     * 列表头部中添加一个项，此项的优先级被初始化为0，不会被选择
+     */
     public synchronized void add(){
         priority.add(priority.size(),0);
         times.add(times.size(),Long.MAX_VALUE);
         lastTime.add(lastTime.size(),System.currentTimeMillis());
     }
 
+    /**
+     * 移除列表中对应序号的项
+     * @param index
+     */
     public synchronized void remove(int index){
         priority.remove(index);
         times.remove(index);
@@ -67,6 +84,12 @@ public class LoadBalancer {
         updatePriority();
     }
 
+    /**
+     * 设置对应项的请求时间和应答时间
+     * @param index
+     * @param responseTime
+     * @param requestTime
+     */
     public void setTime(int index,long responseTime,long requestTime){
         if(requestTime > lastTime.get(index)){
             lastTime.set(index,requestTime);
@@ -74,6 +97,10 @@ public class LoadBalancer {
         }
     }
 
+    /**
+     * 熔断列表中对应的项，此项的优先级被设为0，不会被选择
+     * @param index
+     */
     public void fuse(int index){
         priority.set(index,0);
         times.set(index,Long.MAX_VALUE);
@@ -81,7 +108,7 @@ public class LoadBalancer {
     }
 
     /**
-     * 激活内部实例，不需要加锁
+     * 激活列表中对应的项，并设置此项的优先级为列表中最高
      * @param index
      */
     public void active(int index){

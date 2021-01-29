@@ -28,7 +28,7 @@ public class RequestExecutor<A extends RPCReqBase> extends RequestMsgManager {
             }
 
         }else{
-            throw new RemoteServerDisabledException();
+            throw new RemoteServerDisabledException(reqBase.serverName);
         }
         return reqBase.rspBase.responseParameter;
 

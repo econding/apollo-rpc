@@ -9,7 +9,7 @@ public class RemoteServerLimitException extends RPCException {
     }
 
     public RemoteServerLimitException(RPCRspBase rpcRspBase){
-        super("RemoteServerLimit: serverInstance="+rpcRspBase.instanceName+" RspCode="+rpcRspBase.responseCode);
+        super("RemoteServerLimit: serverInstance="+rpcRspBase.instanceName);
     }
 
 }

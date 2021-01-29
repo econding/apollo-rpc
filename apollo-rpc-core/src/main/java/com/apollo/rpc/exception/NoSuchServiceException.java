@@ -9,7 +9,7 @@ public class NoSuchServiceException extends RPCException{
     }
 
     public NoSuchServiceException(RPCResponseMsg rpcResponseMsg){
-        super("NoSuchServiceException: serverInstace="+rpcResponseMsg.serverInterface+" Method="+rpcResponseMsg.serverMethod+" parameter"+rpcResponseMsg.responseParameter);
+        super("NoSuchServiceException: serverInstance="+rpcResponseMsg.serverInterface+" Method="+rpcResponseMsg.serverMethod+" parameter"+rpcResponseMsg.responseParameter);
     }
 
 }

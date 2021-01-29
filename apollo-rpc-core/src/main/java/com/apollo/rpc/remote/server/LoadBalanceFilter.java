@@ -36,7 +36,7 @@ public class LoadBalanceFilter extends RemoteServerInstanceHolder {
         this.balancer.destroy();
     }
 
-    public Object doRequest(RPCReqBase reqBase){
+    public Object invoke(RPCReqBase reqBase){
         RemoteServerInstance instance = getInstance();
         Object res;
         if(instance != null){
@@ -44,13 +44,13 @@ public class LoadBalanceFilter extends RemoteServerInstanceHolder {
                 throw new ServerInstanceDisabledException();
             }
             try {
-                res = instance.doRequest(reqBase);
+                res = instance.invoke(reqBase);
             }catch (ResponseOutOfTimeException e){
                 requestOutOfTime(instance);
                 throw e;
             }
         }else{
-            throw new RemoteServerDisabledException();
+            throw new RemoteServerDisabledException(reqBase.serverName);
         }
         return res;
     }
@@ -155,7 +155,7 @@ public class LoadBalanceFilter extends RemoteServerInstanceHolder {
         public void checking(){
             RPCServerCheckReqMsg checkingReqMsg = new RPCServerCheckReqMsg();
             try{
-                instance.doRequest(checkingReqMsg);
+                instance.invoke(checkingReqMsg);
                 setTime(instance,checkingReqMsg.rspBase.responseTime,checkingReqMsg.requestTime);
             }catch (ResponseOutOfTimeException e){
                 log.info("instance unavailable:" + instance.toString());

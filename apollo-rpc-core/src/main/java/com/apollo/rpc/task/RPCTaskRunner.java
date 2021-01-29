@@ -13,8 +13,8 @@ public class RPCTaskRunner{
 
     /**
      * 周期性调度
-     * @param command
-     * @param rate
+     * @param command 任务
+     * @param rate 频率
      */
     public static void schedule(RPCScheduledRunnable command, long rate) {
         Future future = executor.scheduleAtFixedRate(command,0,rate, TimeUnit.MILLISECONDS);

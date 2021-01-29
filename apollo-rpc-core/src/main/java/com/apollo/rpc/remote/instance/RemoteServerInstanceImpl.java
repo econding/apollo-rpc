@@ -40,10 +40,10 @@ public class RemoteServerInstanceImpl implements RemoteServerInstance{
     }
 
     @Override
-    public Object doRequest(RPCReqBase reqBase) {
+    public Object invoke(RPCReqBase reqBase) {
         reqBase.instanceName = toString();
         RpcSession session = DefaultSessionFactory.instance.createSession(channel);
-        return session.doRequest(reqBase);
+        return session.request(reqBase);
     }
 
     @Override

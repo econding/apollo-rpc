@@ -33,7 +33,7 @@ public class RPCProxy<T> implements InvocationHandler,Serializable{
         RemoteServer remoteServer = remoteServerHolder.getRemoteServer(serverName);
 
         if(remoteServer != null){
-            return remoteServer.doRequest(rpcInterface.getSimpleName(),method.getName(),args);
+            return remoteServer.invoke(rpcInterface.getSimpleName(),method.getName(),args);
         }else{
             throw new NoSuchRemoteServerException(serverName);
         }

@@ -1,6 +1,5 @@
 package com.apollo.rpc.remote.server;
 
-import com.apollo.rpc.comm.CommonUtil;
 import com.apollo.rpc.comm.Constant;
 import com.apollo.rpc.comm.RemoteServerInfo;
 import com.apollo.rpc.msg.impl.RPCRequestMsg;
@@ -33,9 +32,9 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
     }
 
     @Override
-    public Object doRequest(String ClassName, String Method, Object[] args) throws RPCException {
+    public Object invoke(String ClassName, String Method, Object[] args) throws RPCException {
         RPCRequestMsg rpcRequestMsg = new RPCRequestMsg(Method,serverName,ClassName,args);
-        return super.doRequest(rpcRequestMsg);
+        return super.invoke(rpcRequestMsg);
     }
 
     public void setChannelHolder(ChannelHolder channelHolder) {
@@ -103,7 +102,7 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
         for(RemoteServerInfo serverInfo:serverList){
             RemoteServerInstanceImpl instance = (RemoteServerInstanceImpl)newInstance(serverInfo.getIp(),serverInfo.getPort());
             if(channelHolder.isClient(instance.getIp(),instance.getPort())){//客戶端需要主动发起连接
-                RPCTaskRunner.execute(new ChannelConnectTask(instance));
+                RPCTaskRunner.schedule(new ChannelConnectTask(instance),500);
             }
         }
     }
@@ -113,7 +112,7 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
      */
     private class ChannelConnectTask extends RPCScheduledRunnable {
 
-        RemoteServerInstanceImpl instance;
+        private RemoteServerInstanceImpl instance;
 
         public ChannelConnectTask(RemoteServerInstanceImpl instance){
             this.instance = instance;
@@ -122,7 +121,7 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
         @Override
         public void run() {
             Channel channel = null;
-            while(channel == null && instances.contains(instance)){
+            if(channel == null && instances.contains(instance)){
                 channel = channelHolder.doConnect(instance.getIp(),instance.getPort());
                 if(channel != null){
                     instance.active(channel);
@@ -130,7 +129,8 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
                     channelHolder.addChannel(channel,instance);
                     return;
                 }
-                CommonUtil.sleep(500);
+            }else{
+                cancel();
             }
         }
     }
