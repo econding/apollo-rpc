@@ -29,14 +29,7 @@ public class ChannelHolder {
     }
 
     public Channel doConnect(String ip,String port){
-        Channel channel =  new Client(ip,Integer.parseInt(port)).connect();
-        if(channel != null){
-            if(doAuth(channel)){
-                return channel;
-            }
-            log.error("Authentication failed ip="+ip+" port="+port);
-        }
-        return null;
+        return new Client(ip,Integer.parseInt(port)).connect();
     }
 
     /**
@@ -55,7 +48,12 @@ public class ChannelHolder {
         }
     }
 
-    private boolean doAuth(Channel channel){
+    /**
+     * 向远程服务发送验证信息
+     * @param channel
+     * @return
+     */
+    public boolean doAuth(Channel channel){
 
         RPCAuthReqMsg rpcAuthReqMsg = new RPCAuthReqMsg();
         rpcAuthReqMsg.msgType = Constant.server_auth;
@@ -69,7 +67,6 @@ public class ChannelHolder {
         try {
             serverAuthSession.request(rpcAuthReqMsg);
         }catch  (RPCException e) {
-            e.printStackTrace();
             return false;
         }
         return true;

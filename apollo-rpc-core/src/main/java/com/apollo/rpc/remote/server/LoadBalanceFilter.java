@@ -114,7 +114,7 @@ public class LoadBalanceFilter extends RemoteServerInstanceHolder {
     }
 
     /**
-     *
+     * 获取服务实例
      * @return
      */
     public RemoteServerInstance getInstance(){

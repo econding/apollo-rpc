@@ -29,9 +29,9 @@ public class RPCProxy<T> implements InvocationHandler,Serializable{
         RPCProxy.remoteServerHolder = remoteServerHolder;
     }
 
+    @Override
     public Object invoke(Object proxy, Method method, Object[] args){
         RemoteServer remoteServer = remoteServerHolder.getRemoteServer(serverName);
-
         if(remoteServer != null){
             return remoteServer.invoke(rpcInterface.getSimpleName(),method.getName(),args);
         }else{

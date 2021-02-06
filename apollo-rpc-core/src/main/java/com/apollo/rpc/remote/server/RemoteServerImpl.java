@@ -113,6 +113,7 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
     private class ChannelConnectTask extends RPCScheduledRunnable {
 
         private RemoteServerInstanceImpl instance;
+        private Channel channel = null;
 
         public ChannelConnectTask(RemoteServerInstanceImpl instance){
             this.instance = instance;
@@ -120,18 +121,28 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
 
         @Override
         public void run() {
-            Channel channel = null;
-            if(channel == null && instances.contains(instance)){
-                channel = channelHolder.doConnect(instance.getIp(),instance.getPort());
-                if(channel != null){
-                    instance.active(channel);
-                    active(instance);
-                    channelHolder.addChannel(channel,instance);
-                    return;
+
+            if(instances.contains(instance)){             //服务实例仍存在
+                if(channel == null){                      //channel为空，则建立连接
+                    channel = channelHolder.doConnect(instance.getIp(),instance.getPort());
+                }
+                if(channel != null){                      //channel不为空，则发起鉴权操作
+                    if(channelHolder.doAuth(channel)){    //鉴权成功，则激活服务实例，并取消此task任务
+                        instance.active(channel);
+                        active(instance);
+                        channelHolder.addChannel(channel,instance);
+                        cancel();
+                    }
                 }
             }else{
+                if(channel != null){                     //不存在服务实例，但是channel存在，则断开连接，并取消此task
+                    if(channel.isOpen() || channel.isActive()){
+                        channel.close();
+                    }
+                }
                 cancel();
             }
+
         }
     }
 }

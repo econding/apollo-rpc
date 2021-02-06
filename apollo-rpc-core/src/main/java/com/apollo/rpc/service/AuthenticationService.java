@@ -34,12 +34,10 @@ public class AuthenticationService {
                     return true;
                 }
             }else{
-                remoteServerHolder.getServerInfo();
-                return authenticate(channel,rpcAuthReqMsg);
+                return false;
             }
         }else{
-            remoteServerHolder.getServerInfo();
-            return authenticate(channel,rpcAuthReqMsg);
+            return false;
         }
         return false;
     }

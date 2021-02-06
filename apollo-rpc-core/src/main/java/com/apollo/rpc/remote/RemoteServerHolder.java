@@ -23,11 +23,9 @@ public class RemoteServerHolder {
     private RemoteServerDiscovery discovery = null;
 
     public RemoteServerHolder(){
-
         channelHolder = new ChannelHolder();
         servers = new HashMap<>();
         rpcAuthInfoMap = new HashMap<>();
-
     }
 
     public void setRemoteServerInfo(RemoteServerInfo remoteServerInfo) {
@@ -108,7 +106,6 @@ public class RemoteServerHolder {
     }
 
     private class ServerUpdater extends RPCScheduledRunnable {
-
         @Override
         public void run() {
             try {
