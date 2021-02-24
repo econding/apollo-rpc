@@ -28,7 +28,7 @@ public class RPCSkeleton implements Runnable{
         Object res = null;
         try {
             res = invocation.invokeMethod(requestMsgHolder.getMsg());
-        }  catch (Exception e){
+        }catch (Exception e){
             responseMsg.responseCode = RPCException.RemoteMethodInvocationException;
             RPCException rpcException = new RPCException(e);
             responseMsg.exception = rpcException;

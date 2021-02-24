@@ -1,11 +1,13 @@
 package com.apollo.rpc.session.executor;
 
 
+import com.apollo.rpc.comm.CommonUtil;
 import com.apollo.rpc.exception.RPCException;
 import com.apollo.rpc.msg.RPCReqBase;
 import com.apollo.rpc.msg.RPCRspBase;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,33 +21,26 @@ public class RequestMsgManager {
     public synchronized static void initialize(int rpc_client_timeout){
 
         if(thread == null){
-
             thread = new Thread(() -> {
-
                 while(true){
                     long currTime = System.currentTimeMillis();
                     for (Map<Long, RequestExecutor<RPCReqBase>> map : sessions.values()) {
-                        //避免ConcurrentModificationException，先将超时的请求提出来
-                        List<RequestExecutor<RPCReqBase>> list = new ArrayList<>();
-                        for (RequestExecutor<RPCReqBase> request : map.values()){
-                            if(currTime - request.reqBase.requestTime > rpc_client_timeout){
-                                list.add(request);
+                        Iterator<Map.Entry<Long, RequestExecutor<RPCReqBase>>> it = map.entrySet().iterator();
+                        while (it.hasNext()){
+                            Map.Entry<Long, RequestExecutor<RPCReqBase>> entry = it.next();
+                            RequestExecutor<RPCReqBase> request = entry.getValue();
+                            if(currTime - request.reqBase.requestTime > rpc_client_timeout){ //判断超时
+                                doResponseOutOfTime(request);
+                                it.remove();
                             }
                         }
-                        //执行超时操作
-                        for(RequestExecutor request : list) {
-                            doResponseOutOfTime(request);
-                        }
                     }
-                    try {
-                        Thread.sleep(rpc_client_timeout/4);
-                    } catch (InterruptedException e) {
-
-                    }
+                    CommonUtil.sleep(rpc_client_timeout/4);
                 }
             });
             thread.start();
         }
+
     }
 
     /**
@@ -87,25 +82,27 @@ public class RequestMsgManager {
             return map.remove(response.sequenceNo);
         }
         return null;
+
     }
 
     private synchronized static Map<Long, RequestExecutor<RPCReqBase>> createMap(){
         return new ConcurrentHashMap<>();
     }
 
+    /**
+     * 执行超时操作
+     * @param request
+     */
     private static void doResponseOutOfTime(RequestExecutor request){
 
-        try {
-            RPCRspBase rspBase = request.reqBase.getRspMsg();
-            rspBase.responseCode = RPCException.RequestOutOfTimeException;
+        RPCRspBase rspBase = request.reqBase.getRspMsg();
+        rspBase.responseCode = RPCException.RequestOutOfTimeException;
 
-            ResponseExecutor response = new ResponseExecutor();
-            response.doResponse(rspBase);
-
-            getAndRemoveRequest(rspBase);
-        } catch (Exception e) {
-            e.printStackTrace();
+        request.reqBase.rspBase = rspBase;
+        synchronized (request.reqBase){ //唤醒等待的线程
+            request.reqBase.notifyAll();
         }
+
     }
 
 }
