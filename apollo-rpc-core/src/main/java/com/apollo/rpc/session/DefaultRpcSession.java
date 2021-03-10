@@ -12,6 +12,7 @@ public class DefaultRpcSession implements RpcSession{
         this.channel = channel;
     }
 
+
     @Override
     public <T extends RPCReqBase> Object request(T t) {
         RequestExecutor<T> request = new RequestExecutor<>();

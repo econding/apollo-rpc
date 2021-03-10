@@ -68,7 +68,7 @@ public class RemoteServerInstanceImpl implements RemoteServerInstance{
             if(channel.isActive()){
                 channel.close();
             }
-            this.channel.close();
+
         }
     }
 

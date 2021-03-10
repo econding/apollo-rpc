@@ -8,11 +8,15 @@ public class RPCException extends RuntimeException{
 
     /**远程方法执行异常*/
     public static final int RemoteMethodInvocationException = 1;
-
+    /** 请求超时*/
     public static final int RequestOutOfTimeException = 2;
+    /** 签权失败*/
     public static final int AuthenticationFailureException = 3;
+    /** 非法请求*/
     public static final int NoAuthorizedException = 4;
+    /** 服务器限流*/
     public static final int RemoteServerLimitException = 5;
+    /** 服务不存在*/
     public static final int NoSuchServiceException = 6;
 
     public RPCException(){
