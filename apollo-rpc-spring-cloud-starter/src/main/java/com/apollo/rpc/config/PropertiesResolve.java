@@ -1,6 +1,6 @@
 package com.apollo.rpc.config;
 
-import com.apollo.rpc.comm.RPCProperties;
+import com.apollo.rpc.core.comm.RPCProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -14,11 +14,11 @@ public class PropertiesResolve {
     public RPCProperties getProperties(){
 
         RPCProperties properties = new RPCProperties();
-        String port = environment.getProperty(RPCProperties.port);
-        if(port == null){
+        String rpc_port = environment.getProperty(RPCProperties.rpc_port);
+        if(rpc_port == null){
             throw new NullPointerException("port must not be null");
         }
-        properties.setProperty(RPCProperties.port,port);
+        properties.setProperty(RPCProperties.rpc_port,rpc_port);
 
         String rpc_package = environment.getProperty(RPCProperties.rpc_package);
         if(rpc_package == null){
@@ -50,6 +50,11 @@ public class PropertiesResolve {
         String permit_per_seconed = environment.getProperty(RPCProperties.permit_per_second);
         if(permit_per_seconed != null){
             properties.setProperty(RPCProperties.permit_per_second,permit_per_seconed);
+        }
+
+        String port = environment.getProperty(RPCProperties.port);
+        if(port != null){
+            properties.setProperty(RPCProperties.port,port);
         }
 
         return properties;

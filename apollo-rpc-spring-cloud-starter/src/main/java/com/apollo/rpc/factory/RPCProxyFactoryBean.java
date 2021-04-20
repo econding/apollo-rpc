@@ -1,7 +1,7 @@
 package com.apollo.rpc.factory;
 
 import com.apollo.rpc.annotation.RpcClient;
-import com.apollo.rpc.proxy.RPCProxyFactory;
+import com.apollo.rpc.core.proxy.RPCProxyFactory;
 import org.springframework.beans.factory.FactoryBean;
 
 class RPCProxyFactoryBean<T> implements FactoryBean<T> {

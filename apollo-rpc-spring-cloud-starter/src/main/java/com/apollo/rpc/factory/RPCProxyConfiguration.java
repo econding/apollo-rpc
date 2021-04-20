@@ -1,6 +1,6 @@
 package com.apollo.rpc.factory;
 
-import com.apollo.rpc.comm.RPCProperties;
+import com.apollo.rpc.core.comm.RPCProperties;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -23,7 +23,6 @@ class RPCProxyConfiguration implements ApplicationContextAware {
         return new RPCProxyRegister(packages.split(","));
     }
 
-
     /**
      *  实现ApplicationContextAware接口，可以在加载RpcProxyRegister之前绑定ApplicationContext属性，通过ApplicationContext可以获取到配置信息
      * @param applicationContext
@@ -33,4 +32,5 @@ class RPCProxyConfiguration implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
+
 }

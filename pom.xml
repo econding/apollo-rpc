@@ -11,7 +11,7 @@
 
     <modules>
         <module>apollo-rpc-core</module>
-        <module>apollo-rpc-register</module>
+        <module>apollo-rpc-registry</module>
         <module>apollo-rpc-spring-cloud-starter</module>
     </modules>
 

@@ -1,11 +1,10 @@
 package com.apollo.rpc.factory;
 
 import com.apollo.rpc.annotation.RpcService;
-import com.apollo.rpc.comm.CommonUtil;
-import com.apollo.rpc.comm.RPCProperties;
+import com.apollo.rpc.core.comm.RPCProperties;
 import com.apollo.rpc.config.PropertiesResolve;
 import com.apollo.rpc.discovery.CloudServerDiscovery;
-import com.apollo.rpc.service.RPCInitializer;
+import com.apollo.rpc.core.service.RPCInitializer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,7 @@ public class RPCAutoConfiguration implements ApplicationListener<ContextRefreshe
         Map<String, Object> servers = event.getApplicationContext().getBeansWithAnnotation(RpcService.class);
         registry = registerServer(servers);
         registry.start();
-        log.info("RPC Service Started on port:"+propertiesResolve.getProperties().getString(RPCProperties.port));
+        log.info("RPC Service Started on port:"+propertiesResolve.getProperties().getString(RPCProperties.rpc_port));
     }
 
     private RPCInitializer registerServer(Map<String, Object> servers){

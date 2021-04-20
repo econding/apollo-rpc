@@ -1,7 +1,7 @@
 package com.apollo.rpc.discovery;
 
-import com.apollo.rpc.comm.RemoteServerInfo;
-import com.apollo.rpc.remote.RemoteServerDiscovery;
+import com.apollo.rpc.core.comm.RemoteServerInfo;
+import com.apollo.rpc.core.remote.RemoteServerDiscovery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
@@ -26,7 +26,7 @@ public class CloudServerDiscovery implements RemoteServerDiscovery {
     private String serverName;
 
     @Override
-    public Map<String, List<RemoteServerInfo>> getServerInfo() {
+    public Map<String, List<RemoteServerInfo>> getServices() {
         Map<String, List<RemoteServerInfo>> serverMap = new HashMap<>();
 
         List<String> servers = discoveryClient.getServices();
@@ -43,8 +43,9 @@ public class CloudServerDiscovery implements RemoteServerDiscovery {
                 for(ServiceInstance serviceInstance:serviceInstances){
                     RemoteServerInfo serverInfo = new RemoteServerInfo();
                     serverInfo.setIp(serviceInstance.getHost());
+                    serverInfo.setRpcPort(serviceInstance.getMetadata().get(rpc_port));
                     serverInfo.setAuthMsg(serviceInstance.getMetadata().get(auth));
-                    serverInfo.setPort(serviceInstance.getMetadata().get(rpc_port));
+                    serverInfo.setPort(serviceInstance.getPort()+"");
                     serverInfo.setName(serverID);
                     serverInfos.add(serverInfo);
                 }
