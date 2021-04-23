@@ -1,5 +1,6 @@
 package com.apollo.rpc.core.remote;
 
+import com.apollo.rpc.core.session.executor.RequestMsgManager;
 import com.apollo.rpc.core.task.RPCTaskScheduler;
 import com.apollo.rpc.core.remote.server.RemoteServer;
 import com.apollo.rpc.core.remote.server.RemoteServerImpl;
@@ -92,6 +93,7 @@ public class RemoteServerContainer {
             RemoteServerImpl remoteServer = new RemoteServerImpl(serverName);
             servers.put(serverName,remoteServer);
             remoteServer.setChannelHolder(channelHolder);
+            RequestMsgManager.createCacheMapForNewServer(serverName);
             log.info("server: "+ serverName+" has been registered");
             return remoteServer;
         }
@@ -102,6 +104,7 @@ public class RemoteServerContainer {
         RemoteServerImpl remoteServer = (RemoteServerImpl) servers.get(serverName);
         remoteServer.destroy();
         servers.remove(serverName);
+        RequestMsgManager.removeCacheMapForServer(serverName);
         log.info("server: "+ serverName+" has been de-registered");
     }
 

@@ -127,7 +127,7 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
                     channel = channelHolder.doConnect(instance.getIp(),instance.getRpcPort());
                 }
                 if(channel != null){                      //channel不为空，则发起鉴权操作
-                    if(channelHolder.doAuth(channel)){    //鉴权成功，则激活服务实例，并取消此task任务
+                    if(channelHolder.doAuth(channel,instance)){    //鉴权成功，则激活服务实例，并取消此task任务
                         instance.active(channel);
                         active(instance);
                         channelHolder.addChannel(channel,instance);

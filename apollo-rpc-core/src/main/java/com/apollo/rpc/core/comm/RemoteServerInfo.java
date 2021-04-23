@@ -80,4 +80,12 @@ public class RemoteServerInfo {
         this.authMsg = authMsg;
     }
 
+    @Override
+    public String toString() {
+        return "RemoteServerInstance{" +
+                "ip='" + ip + '\'' +
+                ", port='" + port + '\'' +
+                ", serverName='" + name + '\'' +
+                '}';
+    }
 }

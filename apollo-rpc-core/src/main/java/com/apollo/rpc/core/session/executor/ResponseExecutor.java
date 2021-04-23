@@ -6,7 +6,7 @@ import org.apache.commons.logging.LogFactory;
 
 public class ResponseExecutor<T extends RPCRspBase> {
 
-    Log log = LogFactory.getLog(ResponseExecutor.class);
+    private static final Log log = LogFactory.getLog(ResponseExecutor.class);
 
     public void doResponse(T  rspBase){
 
@@ -20,7 +20,7 @@ public class ResponseExecutor<T extends RPCRspBase> {
                 request.reqBase.notifyAll();
             }
         }else{
-            log.error("Request packet missing, unable to wake up blocked thread: "+rspBase.instanceName);
+            log.error("Request packet missing, unable to wake up blocked thread: "+rspBase.sequenceNo);
         }
     }
 }

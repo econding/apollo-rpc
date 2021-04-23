@@ -53,11 +53,12 @@ public class ChannelHolder {
      * @param channel
      * @return
      */
-    public boolean doAuth(Channel channel){
+    public boolean doAuth(Channel channel,RemoteServerInstance instance){
 
         RPCAuthReqMsg rpcAuthReqMsg = new RPCAuthReqMsg();
         rpcAuthReqMsg.msgType = Constant.server_auth;
-        rpcAuthReqMsg.serverName = remoteServerInfo.getName();
+        rpcAuthReqMsg.serverName = instance.getServerName();
+
         rpcAuthReqMsg.authMsg = remoteServerInfo.getAuthMsg();
         rpcAuthReqMsg.authServerName = remoteServerInfo.getName();
         rpcAuthReqMsg.authIp = remoteServerInfo.getIp();

@@ -4,7 +4,12 @@ import com.apollo.rpc.core.comm.CommonUtil;
 import com.apollo.rpc.core.msg.RPCReqBase;
 import com.apollo.rpc.core.msg.RPCRspBase;
 import com.apollo.rpc.core.exception.RPCException;
+import com.apollo.rpc.core.task.RPCScheduledRunnable;
+import com.apollo.rpc.core.task.RPCTaskScheduler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,91 +20,68 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RequestMsgManager {
 
-    private static final Map<String, Map<Long, RequestExecutor>> sessions = new ConcurrentHashMap<>();
-
+    private static final Log log = LogFactory.getLog(RequestMsgManager.class);
+    private static final Map<String, RemoteServerMsgCache> caches = new HashMap<>();
     private static Thread thread;
+    private static int time_out;
 
     public synchronized static void initialize(int rpc_client_timeout){
-
+        time_out = rpc_client_timeout;
         if(thread == null){
-            thread = new Thread(() -> {
+            thread = new Thread(() -> {   //使用线程而不使用定时调度任务
                 while(true){
-                    long currTime = System.currentTimeMillis();
-                    for (Map<Long, RequestExecutor> map : sessions.values()) {
-                        Iterator<Map.Entry<Long, RequestExecutor>> it = map.entrySet().iterator();
-                        while (it.hasNext()){
-                            Map.Entry<Long, RequestExecutor> entry = it.next();
-                            RequestExecutor request = entry.getValue();
-                            if(currTime - request.reqBase.requestTime > rpc_client_timeout){ //判断超时
-                                doResponseOutOfTime(request);
-                                it.remove();
-                            }
-                        }
-                    }
-                    CommonUtil.sleep(rpc_client_timeout/4);
+                    check();
+                    CommonUtil.sleep(time_out/4);
                 }
             });
             thread.start();
         }
     }
 
-    /**
-     * 虽然本方法执行的操作是非原子操作并且没有加锁，但是因为第一步操作(原子的)与第二步操作之间不存在约束性条件
-     * (第一步操作的结果是确定的，所以不会影响第二步执行的结果)，所以本方法仍然是线程安全的
-     * @param request
-     */
-    protected static void putRequest(RequestExecutor request) {
-
-        //第一步：获取对应服务的map
-        Map<Long, RequestExecutor> map = sessions.get(request.reqBase.serverName);
-
-        if(map == null){
-            synchronized (RequestMsgManager.class){
-                map = sessions.get(request.reqBase.serverName);
-                if(map == null){
-                    map = createMap();
-                    sessions.put(request.reqBase.serverName,map);
-                }
-            }
+    private synchronized static void check(){
+        long currTime = System.currentTimeMillis();
+        for (RemoteServerMsgCache msgCache : caches.values()) {
+            msgCache.check(currTime);
         }
-        //第二步：将request放入map
-        map.put(request.reqBase.sequenceNo, request);
-
     }
 
-    /**
-     * 此方法跟{putRequest}类似，不需要同步仍然是线程安全的
-     * @param response
-     * @return
-     */
-    protected static RequestExecutor getAndRemoveRequest(RPCRspBase response){
+    public synchronized static void createCacheMapForNewServer(String serverName){
+        RemoteServerMsgCache map = caches.get(serverName);
+        if(map == null){
+            caches.put(serverName,new RemoteServerMsgCache(serverName,time_out));
+        }
+    }
 
-        Map<Long, RequestExecutor> map = sessions.get(response.serverName);
+    public synchronized static void removeCacheMapForServer(String serverName){
+        RemoteServerMsgCache cache = caches.get(serverName);
+        if(cache != null){
+            RPCTaskScheduler.schedule(new RPCScheduledRunnable() {
+                @Override
+                public void run() {
+                    if(cache.isEmpty()){  //等待map清空后再移除
+                        caches.remove(serverName);
+                    }
+                }
+            },100);
+        }
+    }
+
+    protected static void putRequest(RequestExecutor request) {
+        //第一步：获取对应服务的map
+        RemoteServerMsgCache map = caches.get(request.reqBase.serverName);
+        if(map != null){
+            //第二步：将request放入map
+            map.put(request.reqBase.sequenceNo, request);
+            log.info("request seq: "+request.reqBase.serverName+" "+request.reqBase.sequenceNo);
+        }
+    }
+
+    protected static RequestExecutor getAndRemoveRequest(RPCRspBase response){
+        RemoteServerMsgCache map = caches.get(response.serverName);
         if(map != null){
             return map.remove(response.sequenceNo);
         }
         return null;
-
-    }
-
-    private synchronized static Map<Long, RequestExecutor> createMap(){
-        return new ConcurrentHashMap<>();
-    }
-
-    /**
-     * 执行超时操作
-     * @param request
-     */
-    private static void doResponseOutOfTime(RequestExecutor request){
-
-        RPCRspBase rspBase = request.reqBase.getRspMsg();
-        rspBase.responseCode = RPCException.RequestOutOfTimeException;
-
-        request.reqBase.rspBase = rspBase;
-        synchronized (request.reqBase){ //唤醒等待的线程
-            request.reqBase.notifyAll();
-        }
-
     }
 
 }

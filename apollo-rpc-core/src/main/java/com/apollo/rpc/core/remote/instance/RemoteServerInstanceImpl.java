@@ -14,9 +14,7 @@ import java.util.Objects;
 public class RemoteServerInstanceImpl implements RemoteServerInstance{
 
     private static final Log log = LogFactory.getLog(RemoteServerContainer.class);
-
     private Channel channel;
-
     private boolean active = false;
 
     private String ip;
@@ -46,6 +44,7 @@ public class RemoteServerInstanceImpl implements RemoteServerInstance{
 
     @Override
     public Object invoke(RPCReqBase reqBase) {
+        reqBase.serverName = serverName;
         reqBase.instanceName = toString();
         RpcSession session = DefaultSessionFactory.instance.createSession(channel);
         return session.request(reqBase);
