@@ -16,11 +16,10 @@ public class ResponseExecutor<T extends RPCRspBase> {
 
         if(request != null){
             request.reqBase.rspBase = rspBase;
-            synchronized (request.reqBase){ //唤醒等待的线程
-                request.reqBase.notifyAll();
-            }
+            request.weakUp();
         }else{
             log.error("Request packet missing, unable to wake up blocked thread: "+rspBase.sequenceNo);
         }
+
     }
 }

@@ -13,10 +13,13 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
 
+/**
+ * 远程服务管理对象
+ */
 public class RemoteServerContainer {
 
     private static final Log log = LogFactory.getLog(RemoteServerContainer.class);
-    private static final long Server_Update_Time = 1000;
+    private static final long server_update_time = 1000;
 
     private ChannelHolder channelHolder;
     private Map<String,RemoteServer> servers;
@@ -48,7 +51,7 @@ public class RemoteServerContainer {
     public void setDiscovery(RemoteServerDiscovery discovery) {
         this.discovery = discovery;
         ServerUpdater serverUpdater = new ServerUpdater();
-        RPCTaskScheduler.schedule(serverUpdater,Server_Update_Time);
+        RPCTaskScheduler.schedule(serverUpdater, server_update_time);
     }
 
     public synchronized void getServerInfo(){
@@ -104,7 +107,7 @@ public class RemoteServerContainer {
         RemoteServerImpl remoteServer = (RemoteServerImpl) servers.get(serverName);
         remoteServer.destroy();
         servers.remove(serverName);
-        RequestMsgManager.removeCacheMapForServer(serverName);
+        RequestMsgManager.removeCacheMap(serverName);
         log.info("server: "+ serverName+" has been de-registered");
     }
 

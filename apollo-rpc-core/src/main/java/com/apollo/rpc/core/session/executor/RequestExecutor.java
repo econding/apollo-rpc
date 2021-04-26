@@ -5,11 +5,15 @@ import com.apollo.rpc.core.msg.RPCReqBase;
 import com.apollo.rpc.core.exception.RemoteServerDisabledException;
 import com.apollo.rpc.core.exception.RPCException;
 import io.netty.channel.Channel;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 public class RequestExecutor<A extends RPCReqBase> {
 
+    private static final Log log = LogFactory.getLog(RequestExecutor.class);
     public A reqBase;
+    private boolean weakUp;
 
     public Object doRequest(A reqBase, Channel channel) {
 
@@ -17,11 +21,11 @@ public class RequestExecutor<A extends RPCReqBase> {
 
         if(channel != null){
 
-            channel.writeAndFlush(reqBase); //发送消息
-
             RequestMsgManager.putRequest(this);   //存储请求
 
-            waiting(reqBase);   //等待
+            channel.writeAndFlush(reqBase);       //发送消息
+
+            waiting();                     //等待
 
             if(reqBase.rspBase.responseCode != 0){
                 throw RPCException.throwException(reqBase.rspBase); //异常处理
@@ -35,18 +39,19 @@ public class RequestExecutor<A extends RPCReqBase> {
 
     }
 
-    /**
-     * 使用方法递归来屏蔽中断，防止在请求发出后，当前线程被中断后异常唤醒，导致在收到应答时无法正确处理
-     * @param o
-     */
-    private void waiting(Object o){
-        synchronized (o){ //在请求上做同步
+    private synchronized void waiting(){
+        while(!weakUp){
             try {
-                o.wait();
+                wait();
             } catch (InterruptedException e) {
-                waiting(o);
+                log.error("The current thread cannot respond to an interrupt");
             }
         }
+    }
+
+    public synchronized void weakUp(){
+        weakUp = true;
+        notifyAll();
     }
 
 }

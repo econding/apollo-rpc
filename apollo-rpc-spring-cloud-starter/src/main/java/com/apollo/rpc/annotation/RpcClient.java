@@ -1,8 +1,10 @@
 package com.apollo.rpc.annotation;
 
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.lang.annotation.*;
 
 

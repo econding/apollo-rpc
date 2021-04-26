@@ -5,12 +5,14 @@ import com.apollo.rpc.core.msg.RPCRspBase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 服务消息管理类
+ * 服务消息管理
  */
 public class RemoteServerMsgCache {
 
@@ -22,7 +24,7 @@ public class RemoteServerMsgCache {
     public RemoteServerMsgCache(String serverName,int time_out){
         this.time_out = time_out;
         this.serverName = serverName;
-        msgCache = new ConcurrentHashMap();
+        this.msgCache = new ConcurrentHashMap();
     }
 
     public void put(long seqNo,RequestExecutor request){
@@ -37,6 +39,7 @@ public class RemoteServerMsgCache {
         return msgCache.isEmpty();
     }
 
+
     public void check(long currTime){
         Iterator<Map.Entry<Long,RequestExecutor>> iterable = msgCache.entrySet().iterator();
         while(iterable.hasNext()){
@@ -48,14 +51,31 @@ public class RemoteServerMsgCache {
         }
     }
 
+    /*
+    public void check(long currTime){
+        List<Long> longList = new ArrayList<>();
+        for(long seqNo:msgCache.keySet()){
+            RequestExecutor request = msgCache.get(seqNo);
+            if(request != null){
+                if(currTime - request.reqBase.requestTime > time_out){
+                    doResponseOutOfTime(request);
+                    longList.add(seqNo);
+                }
+            }
+        }
+        synchronized (this){
+            for(long seqNo:longList){
+                msgCache.remove(seqNo);
+            }
+        }
+    }*/
+
     private void doResponseOutOfTime(RequestExecutor request){
         log.info("response out of time seq: "+request.reqBase.serverName+" "+request.reqBase.sequenceNo);
         RPCRspBase rspBase = request.reqBase.getRspMsg();
         rspBase.responseCode = RPCException.RequestOutOfTimeException;
         request.reqBase.rspBase = rspBase;
-        synchronized (request.reqBase){ //唤醒等待的线程
-            request.reqBase.notifyAll();
-        }
+        request.weakUp();
     }
 
 }

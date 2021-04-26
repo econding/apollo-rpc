@@ -1,6 +1,6 @@
 package com.apollo.rpc.annotation;
 
-import com.apollo.rpc.factory.RPCImportBeanDefinitionRegistrar;
+import com.apollo.rpc.config.RPCImportBeanDefinitionRegistrar;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

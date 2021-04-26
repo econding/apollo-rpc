@@ -2,13 +2,13 @@ package com.apollo.rpc.config;
 
 import com.apollo.rpc.core.comm.RPCProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PropertiesResolve {
+public class PropertiesResolve implements EnvironmentAware {
 
-    @Autowired
     private Environment environment;
 
     public RPCProperties getProperties(){
@@ -47,9 +47,9 @@ public class PropertiesResolve {
             properties.setProperty(RPCProperties.pool_size,pool_size);
         }
 
-        String permit_per_seconed = environment.getProperty(RPCProperties.permit_per_second);
-        if(permit_per_seconed != null){
-            properties.setProperty(RPCProperties.permit_per_second,permit_per_seconed);
+        String permit_per_second = environment.getProperty(RPCProperties.permit_per_second);
+        if(permit_per_second != null){
+            properties.setProperty(RPCProperties.permit_per_second,permit_per_second);
         }
 
         String port = environment.getProperty(RPCProperties.port);
@@ -58,5 +58,10 @@ public class PropertiesResolve {
         }
 
         return properties;
+    }
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
     }
 }

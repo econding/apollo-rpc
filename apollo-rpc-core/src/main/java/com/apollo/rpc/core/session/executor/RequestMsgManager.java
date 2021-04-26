@@ -52,7 +52,7 @@ public class RequestMsgManager {
         }
     }
 
-    public synchronized static void removeCacheMapForServer(String serverName){
+    public synchronized static void removeCacheMap(String serverName){
         RemoteServerMsgCache cache = caches.get(serverName);
         if(cache != null){
             RPCTaskScheduler.schedule(new RPCScheduledRunnable() {
@@ -66,17 +66,19 @@ public class RequestMsgManager {
         }
     }
 
-    protected static void putRequest(RequestExecutor request) {
+    public static void putRequest(RequestExecutor request) {
         //第一步：获取对应服务的map
         RemoteServerMsgCache map = caches.get(request.reqBase.serverName);
         if(map != null){
             //第二步：将request放入map
             map.put(request.reqBase.sequenceNo, request);
-            log.info("request seq: "+request.reqBase.serverName+" "+request.reqBase.sequenceNo);
+            //log.info("request seq: "+request.reqBase.serverName+" "+request.reqBase.sequenceNo);
+        }else{
+            log.error("server msg cache not found : serverName "+request.reqBase.serverName);
         }
     }
 
-    protected static RequestExecutor getAndRemoveRequest(RPCRspBase response){
+    public static RequestExecutor getAndRemoveRequest(RPCRspBase response){
         RemoteServerMsgCache map = caches.get(response.serverName);
         if(map != null){
             return map.remove(response.sequenceNo);
