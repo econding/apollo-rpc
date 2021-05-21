@@ -27,4 +27,5 @@ public abstract class MsgBase implements Serializable {
     public String instanceName = "";
 
     public abstract String toString();
+
 }

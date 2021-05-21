@@ -33,11 +33,7 @@ public class AuthenticationService {
                     remoteServerContainer.getChannelHolder().addChannel(channel,instance);
                     return true;
                 }
-            }else{
-                return false;
             }
-        }else{
-            return false;
         }
         return false;
 

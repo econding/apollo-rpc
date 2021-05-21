@@ -15,7 +15,7 @@ public class Constant {
     /**消息类型：服务鉴权 */
     public static final String server_auth = "2";
 
-    /**服务发现异步任务的线程池大小 */
+    /**异步调度任务的线程池大小 */
     public static final int pool_size = 3;
 
 }

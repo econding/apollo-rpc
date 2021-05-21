@@ -13,6 +13,7 @@ import java.util.concurrent.locks.StampedLock;
 
 /**
  * 负载均衡和熔断过滤器
+ * 线程安全类
  */
 public class LoadBalanceFilter extends RemoteServerInstanceHolder {
 
@@ -163,10 +164,10 @@ public class LoadBalanceFilter extends RemoteServerInstanceHolder {
             }catch (RemoteServerLimitException e){
                 log.info("the RemoteServer is busy:" + instance.toString());
                 requestOutOfTime(instance);
-            }catch (RPCException e){
+            }catch (Exception e){
                 log.error("unchecked exception",e);
             }
         }
-
     }
+
 }

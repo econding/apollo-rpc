@@ -5,18 +5,18 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /**
- * 当前服务实例的鉴权信息
+ * 服务实例的鉴权信息
  */
 public class RemoteServerInfo {
 
     private String ip;
 
     private String name;
-    /** 服务器主端口 */
+    /** 服务器主端口,用以标识特定的服务实例 */
     private String port;
     /** 服务器用于交换rpc报文的端口 */
     private String rpc_port;
-
+    /** 鉴权信息 */
     private String authMsg;
 
     public RemoteServerInfo(){

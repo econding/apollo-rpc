@@ -13,7 +13,6 @@ import java.net.InetSocketAddress;
 public class Server {
 
     private ChannelInitializer channelInitializer;
-    //private final ChannelGroup channelGroup = new DefaultChannelGroup(ImmediateEventExecutor.INSTANCE);
     private final EventLoopGroup group = new NioEventLoopGroup();
 
     private Channel channel;

@@ -59,7 +59,6 @@ public class RPCDispatchService {
     }
 
     public Class getParameterizedType(Class clazz) {
-
         Type[] types = clazz.getGenericInterfaces();      //所有接口
         if(types != null){
             for(Type type:types){

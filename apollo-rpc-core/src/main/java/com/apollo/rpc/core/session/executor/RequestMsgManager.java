@@ -60,6 +60,7 @@ public class RequestMsgManager {
                 public void run() {
                     if(cache.isEmpty()){  //等待map清空后再移除
                         caches.remove(serverName);
+                        cancel();
                     }
                 }
             },100);

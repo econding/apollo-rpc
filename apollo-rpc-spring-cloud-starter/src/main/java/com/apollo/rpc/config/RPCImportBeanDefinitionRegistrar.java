@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 启动时扫描RPC默认的包下面的组件
+ * RPC核心组件注册器
  */
 public class RPCImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 
@@ -35,13 +35,13 @@ public class RPCImportBeanDefinitionRegistrar implements ImportBeanDefinitionReg
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        //先扫描 "com.apollo.rpc" 下所有的bean
+        //先注册 "com.apollo.rpc" 下所有的组件
         RPCCoreBeanDefinitionScanner coreScanner =
                 new RPCCoreBeanDefinitionScanner(registry, true);//使用默认的过滤器
         coreScanner.setResourceLoader(resourceLoader);
         coreScanner.scan(package_properties);
 
-        //第二部 扫描应用下所有包含 @RpcClient 注解的bean，并自定义此类bean的创建方式
+        //第二步 扫描应用下所有包含 @RpcClient 注解的bean，并为此类注解创建FactoryBean
         Set<String> basePackages = getBasePackages(importingClassMetadata);
         //获取扫描器
         ClassPathScanningCandidateComponentProvider rpcClientProxyBeanScanner = getScanner();
@@ -107,6 +107,7 @@ public class RPCImportBeanDefinitionRegistrar implements ImportBeanDefinitionReg
         this.resourceLoader=resourceLoader;
     }
 
+    @Override
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }

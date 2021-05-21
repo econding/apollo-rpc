@@ -51,25 +51,6 @@ public class RemoteServerMsgCache {
         }
     }
 
-    /*
-    public void check(long currTime){
-        List<Long> longList = new ArrayList<>();
-        for(long seqNo:msgCache.keySet()){
-            RequestExecutor request = msgCache.get(seqNo);
-            if(request != null){
-                if(currTime - request.reqBase.requestTime > time_out){
-                    doResponseOutOfTime(request);
-                    longList.add(seqNo);
-                }
-            }
-        }
-        synchronized (this){
-            for(long seqNo:longList){
-                msgCache.remove(seqNo);
-            }
-        }
-    }*/
-
     private void doResponseOutOfTime(RequestExecutor request){
         log.info("response out of time seq: "+request.reqBase.serverName+" "+request.reqBase.sequenceNo);
         RPCRspBase rspBase = request.reqBase.getRspMsg();

@@ -90,10 +90,10 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
                     isExist = true;
                 }
             }
-            if(!isExist){//删除已过期的实例
+            if(!isExist){   //删除已过期的实例
                 removeInstance(instance);
             }else{
-                if(instance.getChannel() != null && !instance.getChannel().isActive()){//如果Channel被关闭，则直接删除对应的实例
+                if(instance.getChannel() != null && !instance.getChannel().isActive()){   //如果Channel被关闭，则直接删除对应的实例
                     instance.inActive();
                 }
             }
@@ -101,7 +101,7 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
         //添加新的实例
         for(RemoteServerInfo serverInfo:serverList){
             RemoteServerInstanceImpl instance = (RemoteServerInstanceImpl)newInstance(serverInfo.getIp(),serverInfo.getPort(),serverInfo.getRpcPort());
-            if(channelHolder.isClient(instance.getIp(),instance.getPort())){//客戶端需要主动发起连接
+            if(channelHolder.isClient(instance.getIp(),instance.getPort())){              //客戶端需要主动发起连接
                 RPCTaskScheduler.schedule(new ChannelConnectTask(instance),500);
             }
         }
@@ -145,5 +145,6 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
 
         }
     }
+
 
 }

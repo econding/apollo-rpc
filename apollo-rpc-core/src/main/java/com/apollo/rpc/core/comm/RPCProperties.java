@@ -8,7 +8,6 @@ public class RPCProperties {
     public static final String rpc_port = "rpc.port";
     public static final String port = "server.port";
     public static final String auth = "rpc.auth";
-    public static final String rpc_package = "rpc.client.package";
     public static final String timeout = "rpc.client.timeout";
     public static final String pool_size = "rpc.server.pool_size";
     public static final String permit_per_second = "rpc.server.permit_per_second";

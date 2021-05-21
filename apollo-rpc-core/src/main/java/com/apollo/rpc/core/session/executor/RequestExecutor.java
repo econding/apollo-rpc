@@ -50,8 +50,10 @@ public class RequestExecutor<A extends RPCReqBase> {
     }
 
     public synchronized void weakUp(){
-        weakUp = true;
-        notifyAll();
+        if(!weakUp){
+            weakUp = true;
+            notifyAll();
+        }
     }
 
 }

@@ -16,15 +16,9 @@ public class PropertiesResolve implements EnvironmentAware {
         RPCProperties properties = new RPCProperties();
         String rpc_port = environment.getProperty(RPCProperties.rpc_port);
         if(rpc_port == null){
-            throw new NullPointerException("port must not be null");
+            throw new NullPointerException("rpc_port must not be null");
         }
         properties.setProperty(RPCProperties.rpc_port,rpc_port);
-
-        String rpc_package = environment.getProperty(RPCProperties.rpc_package);
-        if(rpc_package == null){
-            throw new NullPointerException("rpc_package must not be null");
-        }
-        properties.setProperty(RPCProperties.rpc_package,rpc_package);
 
         String server_name = environment.getProperty(RPCProperties.server_name);
         if(server_name == null){

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class RemoteServerInstanceHolder {
 
-    protected List<RemoteServerInstance> instances = null;
+    protected List<RemoteServerInstance> instances;
 
     public RemoteServerInstanceHolder(){
         instances = new ArrayList<>();

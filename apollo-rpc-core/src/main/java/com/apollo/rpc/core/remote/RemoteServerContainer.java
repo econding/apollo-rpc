@@ -14,7 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import java.util.*;
 
 /**
- * 远程服务管理对象
+ * 远程服务管理容器
  */
 public class RemoteServerContainer {
 

@@ -20,13 +20,13 @@ public class RPCInitializer {
 
     private static final int default_timeout = 20 * 1000;
 
-    private RPCProperties properties;
-    private RPCDispatchService dispatchService;
-    private RPCServiceRegister serviceRegister;
+    private RPCProperties         properties;
+    private RPCDispatchService    dispatchService;
+    private RPCServiceRegister    serviceRegister;
     private RemoteServerContainer remoteServerContainer;
     private AuthenticationService authenticationService;
     private RPCChannelInitializer channelInitializer;
-    private RPCExecutorService rpcExecutorService;
+    private RPCExecutorService    rpcExecutorService;
 
     private RemoteServerDiscovery discovery;
 
@@ -43,10 +43,16 @@ public class RPCInitializer {
 
     }
 
+    /**
+     * 设置报文应答的超时时间
+     */
     public void initSession(){
         RequestMsgManager.initialize(properties.getInt(RPCProperties.timeout,default_timeout));
     }
 
+    /**
+     * 初始化各类服务
+     */
     public void initService(){
 
         dispatchService       = new RPCDispatchService();
@@ -60,20 +66,23 @@ public class RPCInitializer {
         dispatchService.setAuthenticationService(authenticationService);
     }
 
+    /**
+     * 注册报文handler
+     */
     public void initHandler(){
 
-        RPCAuthReqMsgHandler authReqMsgHandler = new RPCAuthReqMsgHandler();
+        RPCAuthReqMsgHandler authReqMsgHandler                  = new RPCAuthReqMsgHandler();
         authReqMsgHandler.initHandler(authenticationService);
         dispatchService.registerHandler(authReqMsgHandler);
 
-        RPCAuthRspMsgHandler authRspMsgHandler = new RPCAuthRspMsgHandler();
+        RPCAuthRspMsgHandler authRspMsgHandler                  = new RPCAuthRspMsgHandler();
         dispatchService.registerHandler(authRspMsgHandler);
 
-        RPCRequestMsgHandler requestMsgHandler = new RPCRequestMsgHandler();
+        RPCRequestMsgHandler requestMsgHandler                  = new RPCRequestMsgHandler();
         requestMsgHandler.initHandler(rpcExecutorService,serviceRegister);
         dispatchService.registerHandler(requestMsgHandler);
 
-        RPCResponseMsgHandler responseMsgHandler = new RPCResponseMsgHandler();
+        RPCResponseMsgHandler responseMsgHandler                = new RPCResponseMsgHandler();
         dispatchService.registerHandler(responseMsgHandler);
 
         RPCServerCheckReqMsgHandler rpcServerCheckReqMsgHandler = new RPCServerCheckReqMsgHandler();
@@ -96,10 +105,10 @@ public class RPCInitializer {
     }
 
     public RemoteServerInfo getServerInfo(){
-        String rpc_port = properties.getString(RPCProperties.rpc_port);
-        String port = properties.getString(RPCProperties.port);
-        String auth = properties.getString(RPCProperties.auth);
-        String serverName = properties.getString(RPCProperties.server_name);
+        String rpc_port             = properties.getString(RPCProperties.rpc_port);
+        String port                 = properties.getString(RPCProperties.port);
+        String auth                 = properties.getString(RPCProperties.auth);
+        String serverName           = properties.getString(RPCProperties.server_name);
         RemoteServerInfo serverInfo = new RemoteServerInfo(serverName,port,rpc_port,auth);
         return serverInfo;
     }
