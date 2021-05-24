@@ -13,7 +13,7 @@ public class RequestExecutor<A extends RPCReqBase> {
 
     private static final Log log = LogFactory.getLog(RequestExecutor.class);
     public A reqBase;
-    private boolean weakUp;
+    private volatile boolean weakUp;
 
     public Object doRequest(A reqBase, Channel channel) {
 
