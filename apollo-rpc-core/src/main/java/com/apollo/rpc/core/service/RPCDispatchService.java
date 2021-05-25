@@ -18,6 +18,10 @@ public class RPCDispatchService {
     private static final HashMap<Class, RPCMsgHandler> msgHandlerHashMap = new HashMap<>();
     private AuthenticationService authenticationService;
 
+    /**
+     * 分发处理
+     * @param msgHolder
+     */
     public void dispatch(MsgHolder msgHolder){
         if(hasPermit(msgHolder)){
             RPCMsgHandler handler = getHandler(msgHolder);
@@ -29,10 +33,20 @@ public class RPCDispatchService {
         this.authenticationService = authenticationService;
     }
 
+    /**
+     * 根据请求报文的类型获取handler
+     * @param requestMsgHolder
+     * @return
+     */
     public RPCMsgHandler getHandler(MsgHolder requestMsgHolder){
         return msgHandlerHashMap.get(requestMsgHolder.getMsg().getClass());
     }
 
+    /**
+     * 判断请求报文是否有权限
+     * @param msgHolder
+     * @return
+     */
     public boolean hasPermit(MsgHolder msgHolder){
         if(needPermit(msgHolder)){
             return authenticationService.isAuth(msgHolder.getChannel());
@@ -41,6 +55,11 @@ public class RPCDispatchService {
         }
     }
 
+    /**
+     * 判断报文是否需要权限
+     * @param msgHolder
+     * @return
+     */
     public boolean needPermit(MsgHolder msgHolder){
         if(msgHolder.getMsg() instanceof RPCAuthReqMsg){
             return false;

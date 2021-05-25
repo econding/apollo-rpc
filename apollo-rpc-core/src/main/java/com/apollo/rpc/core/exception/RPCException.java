@@ -38,13 +38,13 @@ public class RPCException extends RuntimeException{
     public static RPCException throwException(RPCRspBase rpcRspBase){
         int code = rpcRspBase.responseCode;
         switch(code) {
-            case RemoteMethodInvocationException: return throwMethodInvocationException(rpcRspBase);
-            case AuthenticationFailureException: return new AuthenticationFailureException((RPCAuthRspMsg) rpcRspBase);
-            case RequestOutOfTimeException: return new ResponseOutOfTimeException(rpcRspBase);
-            case NoAuthorizedException: return new NotAuthorizedException(rpcRspBase);
-            case RemoteServerLimitException: return new RemoteServerLimitException(rpcRspBase);
-            case NoSuchServiceException: return new NoSuchServiceException((RPCResponseMsg)rpcRspBase);
-            default: return new ResponseCodeErrorException(rpcRspBase);
+            case RemoteMethodInvocationException  : return throwMethodInvocationException(rpcRspBase);
+            case AuthenticationFailureException   : return new AuthenticationFailureException((RPCAuthRspMsg) rpcRspBase);
+            case RequestOutOfTimeException        : return new ResponseOutOfTimeException(rpcRspBase);
+            case NoAuthorizedException            : return new NotAuthorizedException(rpcRspBase);
+            case RemoteServerLimitException       : return new RemoteServerLimitException(rpcRspBase);
+            case NoSuchServiceException           : return new NoSuchServiceException((RPCResponseMsg)rpcRspBase);
+            default                               : return new ResponseCodeErrorException(rpcRspBase);
         }
     }
 
@@ -52,20 +52,6 @@ public class RPCException extends RuntimeException{
         RemoteMethodInvocationException rpcException =  new RemoteMethodInvocationException();
         rpcException.initCause(rpcRspBase.exception);
         return rpcException;
-    }
-
-    /**
-     * test
-     * @param args
-     */
-    public static void main(String[] args) {
-        NullPointerException n1 = new NullPointerException("1");
-        NullPointerException n2 = new NullPointerException("2");
-        n2.initCause(n1);
-        NullPointerException n3 = new NullPointerException("3");
-        n3.initCause(n2);
-
-        n3.printStackTrace();
     }
 
 }

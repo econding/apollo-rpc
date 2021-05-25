@@ -23,9 +23,11 @@ public class RequestExecutor<A extends RPCReqBase> {
 
             RequestMsgManager.putRequest(this);   //存储请求
 
-            channel.writeAndFlush(reqBase);       //发送消息
+            // 发送消息,此步骤与存储请求的顺序不能颠倒，否则在高并发情况下，存在一种情况：
+            // 消息发出并且接受到了应答，但此时请求消息还未被放入缓存中，处理应答消息的线程无法找到被缓存的请求消息，造成信号丢失
+            channel.writeAndFlush(reqBase);
 
-            waiting();                     //等待
+            waiting();                            //等待
 
             if(reqBase.rspBase.responseCode != 0){
                 throw RPCException.throwException(reqBase.rspBase); //异常处理

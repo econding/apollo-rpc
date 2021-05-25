@@ -26,6 +26,11 @@ public abstract class MsgBase implements Serializable {
      */
     public String instanceName = "";
 
+
+    /**
+     * 强制所有子类实现 toString 方法
+     * @return
+     */
     public abstract String toString();
 
 }

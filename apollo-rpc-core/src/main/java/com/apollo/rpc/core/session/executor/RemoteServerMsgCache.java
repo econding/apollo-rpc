@@ -39,7 +39,10 @@ public class RemoteServerMsgCache {
         return msgCache.isEmpty();
     }
 
-
+    /**
+     * 超时检查
+     * @param currTime
+     */
     public void check(long currTime){
         Iterator<Map.Entry<Long,RequestExecutor>> iterable = msgCache.entrySet().iterator();
         while(iterable.hasNext()){

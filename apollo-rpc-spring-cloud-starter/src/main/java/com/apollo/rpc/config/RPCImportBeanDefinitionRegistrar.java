@@ -28,7 +28,7 @@ import java.util.Set;
 public class RPCImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 
     /**需要扫描包路径*/
-    public static final String package_properties = "com.apollo.rpc";
+    public static final String package_properties = "com.apollo.rpc.core";
 
     private ResourceLoader resourceLoader;
     private Environment environment;

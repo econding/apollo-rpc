@@ -32,7 +32,7 @@ public class RPCInitializer {
 
     public RPCInitializer(RPCProperties properties, RemoteServerDiscovery discovery){
         this.properties = properties;
-        this.discovery = discovery;
+        this.discovery  = discovery;
         initService();
         initHandler();
         initChannelInitializer();
