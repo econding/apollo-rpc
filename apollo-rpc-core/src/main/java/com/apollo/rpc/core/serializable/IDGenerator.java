@@ -6,7 +6,7 @@ public class IDGenerator {
 
     private static final AtomicLong atomicLong = new AtomicLong();
 
-    public static synchronized long getID(){
+    public static long getID(){
         return atomicLong.incrementAndGet();
     }
 
