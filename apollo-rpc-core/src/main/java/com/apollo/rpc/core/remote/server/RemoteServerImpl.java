@@ -121,7 +121,6 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
 
         @Override
         public void run() {
-
             if(instances.contains(instance)){             //服务实例仍存在
                 if(channel == null){                      //channel为空，则建立连接
                     channel = channelHolder.doConnect(instance.getIp(),instance.getRpcPort());
@@ -142,7 +141,6 @@ public class RemoteServerImpl extends LoadBalanceFilter implements RemoteServer 
                 }
                 cancel();
             }
-
         }
     }
 

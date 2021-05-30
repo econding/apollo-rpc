@@ -2,7 +2,7 @@ package com.apollo.rpc.core.service;
 
 import com.apollo.rpc.core.channel.Client;
 import com.apollo.rpc.core.handler.*;
-import com.apollo.rpc.core.proxy.RPCProxy;
+import com.apollo.rpc.core.proxy.RPCInvocationHandler;
 import com.apollo.rpc.core.comm.RPCProperties;
 import com.apollo.rpc.core.comm.RemoteServerInfo;
 import com.apollo.rpc.core.concurrent.RPCExecutorService;
@@ -96,7 +96,7 @@ public class RPCInitializer {
 
     public void initClient(){
         Client.setChannelInitializer(channelInitializer);
-        RPCProxy.setRemoteServerHolder(remoteServerContainer);
+        RPCInvocationHandler.setRemoteServerHolder(remoteServerContainer);
     }
 
     public void initChannelInitializer(){

@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
  * Rpc客户端代理
  * @param <T>
  */
-public class RPCProxy<T> implements InvocationHandler,Serializable{
+public class RPCInvocationHandler<T> implements InvocationHandler,Serializable{
 
     private static final long serialVersionUID = -6424540698551729830L;
     private static RemoteServerContainer remoteServerHolder;
@@ -20,13 +20,13 @@ public class RPCProxy<T> implements InvocationHandler,Serializable{
     private final Class<T> rpcInterface;
     private final String serverName ;
 
-    public RPCProxy(Class<T> rpcInterface, String serverName){
+    public RPCInvocationHandler(Class<T> rpcInterface, String serverName){
         this.rpcInterface = rpcInterface;
         this.serverName = serverName;
     }
 
     public static void setRemoteServerHolder(RemoteServerContainer remoteServerHolder) {
-        RPCProxy.remoteServerHolder = remoteServerHolder;
+        RPCInvocationHandler.remoteServerHolder = remoteServerHolder;
     }
 
     @Override

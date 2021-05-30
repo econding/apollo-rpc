@@ -30,9 +30,6 @@ public class Client {
     }
 
     public Channel connect() {
-        if(channelInitializer == null){
-            throw new NullPointerException("ChannelInitializer must not be null");
-        }
         EventLoopGroup group;
         Channel channel = null;
         try {
