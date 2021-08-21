@@ -40,7 +40,6 @@ public class RPCImportBeanDefinitionRegistrar implements ImportBeanDefinitionReg
                 new RPCCoreBeanDefinitionScanner(registry, true);//使用默认的过滤器
         coreScanner.setResourceLoader(resourceLoader);
         coreScanner.scan(package_properties);
-
         //第二步 扫描应用下所有包含 @RpcClient 注解的bean，并为此类注解创建FactoryBean
         Set<String> basePackages = getBasePackages(importingClassMetadata);
         //获取扫描器
@@ -80,12 +79,9 @@ public class RPCImportBeanDefinitionRegistrar implements ImportBeanDefinitionReg
      * 获取扫描组件的包路径
      */
     protected Set<String> getBasePackages(AnnotationMetadata importingClassMetadata) {
-
         Map<String, Object> attributes = importingClassMetadata
                 .getAnnotationAttributes(SpringBootApplication.class.getCanonicalName());  //获取SpringBootApplication上定义的所有需要扫描的包路径
-
         Set<String> basePackages = new HashSet<>();
-
         for (String pkg : (String[]) attributes.get("scanBasePackages")) {
             if (StringUtils.hasText(pkg)) {
                 basePackages.add(pkg);
@@ -94,12 +90,10 @@ public class RPCImportBeanDefinitionRegistrar implements ImportBeanDefinitionReg
         for (Class<?> clazz : (Class<?>[]) attributes.get("scanBasePackageClasses")) {
             basePackages.add(ClassUtils.getPackageName(clazz));
         }
-
         //默认的包路径
         basePackages.add(ClassUtils.getPackageName(importingClassMetadata.getClassName()));
         return basePackages;
     }
-
 
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
