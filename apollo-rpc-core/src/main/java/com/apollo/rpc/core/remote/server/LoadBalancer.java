@@ -67,7 +67,7 @@ public class LoadBalancer {
     /**
      * 列表头部中添加一个项，此项的优先级被初始化为0，不会被选择
      */
-    public synchronized void add(){
+    public void add(){
         priority.add(priority.size(),0);
         times.add(times.size(),Long.MAX_VALUE);
         lastTime.add(lastTime.size(),System.currentTimeMillis());
@@ -77,7 +77,7 @@ public class LoadBalancer {
      * 移除列表中对应序号的项
      * @param index
      */
-    public synchronized void remove(int index){
+    public void remove(int index){
         priority.remove(index);
         times.remove(index);
         lastTime.remove(index);

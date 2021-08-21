@@ -27,7 +27,6 @@ public class RPCAutoConfiguration implements ApplicationListener<ContextRefreshe
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-
         Map<String, Object> servers = event.getApplicationContext().getBeansWithAnnotation(RpcService.class);
         registry = registerService(servers);
         registry.start();

@@ -35,7 +35,7 @@ public class RPCImportBeanDefinitionRegistrar implements ImportBeanDefinitionReg
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        //先注册 "com.apollo.rpc" 下所有的组件
+        //先注册 "com.apollo.rpc.core" 下所有的组件
         RPCCoreBeanDefinitionScanner coreScanner =
                 new RPCCoreBeanDefinitionScanner(registry, true);//使用默认的过滤器
         coreScanner.setResourceLoader(resourceLoader);
@@ -61,7 +61,6 @@ public class RPCImportBeanDefinitionRegistrar implements ImportBeanDefinitionReg
                 }
             }
         }
-
     }
 
     private ClassPathScanningCandidateComponentProvider getScanner() {
