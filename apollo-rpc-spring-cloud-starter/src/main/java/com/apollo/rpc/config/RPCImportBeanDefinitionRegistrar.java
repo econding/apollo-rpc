@@ -9,9 +9,7 @@ import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
-import org.springframework.context.annotation.ScannedGenericBeanDefinition;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
@@ -28,7 +26,7 @@ import java.util.Set;
 public class RPCImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 
     /**需要扫描包路径*/
-    public static final String package_properties = "com.apollo.rpc.core";
+    public static final String package_properties = "com.apollo.rpc";
 
     private ResourceLoader resourceLoader;
     private Environment environment;
@@ -36,11 +34,11 @@ public class RPCImportBeanDefinitionRegistrar implements ImportBeanDefinitionReg
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         //先注册 "com.apollo.rpc.core" 下所有的组件
-        RPCCoreBeanDefinitionScanner coreScanner =
-                new RPCCoreBeanDefinitionScanner(registry, true);//使用默认的过滤器
-        coreScanner.setResourceLoader(resourceLoader);
-        coreScanner.scan(package_properties);
+        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(registry,true);//使用默认的过滤器
+        scanner.setResourceLoader(resourceLoader);
+        scanner.scan(package_properties);
         //第二步 扫描应用下所有包含 @RpcClient 注解的bean，并为此类注解创建FactoryBean
+        //由于单独的接口无法被springIOC容器加载，所以只能手动扫描
         Set<String> basePackages = getBasePackages(importingClassMetadata);
         //获取扫描器
         ClassPathScanningCandidateComponentProvider rpcClientProxyBeanScanner = getScanner();
@@ -76,7 +74,7 @@ public class RPCImportBeanDefinitionRegistrar implements ImportBeanDefinitionReg
     }
 
     /**
-     * 获取扫描组件的包路径
+     * 获取扫描组件的包路径（获取启动类的包路径配置）
      */
     protected Set<String> getBasePackages(AnnotationMetadata importingClassMetadata) {
         Map<String, Object> attributes = importingClassMetadata

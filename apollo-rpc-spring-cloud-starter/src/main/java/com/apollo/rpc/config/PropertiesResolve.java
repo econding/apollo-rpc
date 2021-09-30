@@ -58,4 +58,5 @@ public class PropertiesResolve implements EnvironmentAware {
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }
+
 }

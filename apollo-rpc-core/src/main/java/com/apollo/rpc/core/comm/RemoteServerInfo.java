@@ -62,7 +62,6 @@ public class RemoteServerInfo {
         this.rpc_port = rpc_port;
     }
 
-
     public void setIp(String ip) {
         this.ip = ip;
     }

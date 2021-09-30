@@ -35,4 +35,5 @@ public class Server {
     public void setChannelInitializer(ChannelInitializer channelInitializer) {
         this.channelInitializer = channelInitializer;
     }
+
 }
