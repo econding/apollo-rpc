@@ -28,12 +28,12 @@ public class RPCAutoConfiguration implements ApplicationListener<ContextRefreshe
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        registry = getRECInitializer(event.getApplicationContext());
+        registry = getRPCInitializer(event.getApplicationContext());
         registry.start();
         log.info("RPC Service Started on port:"+propertiesResolve.getProperties().getString(RPCProperties.rpc_port));
     }
 
-    private RPCInitializer getRECInitializer(ApplicationContext context){
+    private RPCInitializer getRPCInitializer(ApplicationContext context){
         Map<String, Object> servers = context.getBeansWithAnnotation(RpcService.class);
         RPCProperties properties = propertiesResolve.getProperties();
         RPCInitializer rpcInitializer = new RPCInitializer(properties,cloudServerDiscovery);

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.StampedLock;
 
 /**
  * 请求报文的管理类
@@ -21,9 +22,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RequestMsgManager {
 
     private static final Log log = LogFactory.getLog(RequestMsgManager.class);
-    private static final Map<String, RemoteServerMsgCache> caches = new HashMap<>();
+    private static final Map<String, RemoteServerMsgCache> caches = new ConcurrentHashMap<>();
     private static Thread thread;
     private static int time_out;
+    private static StampedLock stampedLock = new StampedLock();//高性能读写锁
+
 
     public synchronized static void initialize(int rpc_client_timeout){
         time_out = rpc_client_timeout;
@@ -46,9 +49,14 @@ public class RequestMsgManager {
     }
 
     public synchronized static void createCacheMapForNewServer(String serverName){
-        RemoteServerMsgCache map = caches.get(serverName);
-        if(map == null){
-            caches.put(serverName,new RemoteServerMsgCache(serverName,time_out));
+        long temp = stampedLock.writeLock();
+        try {
+            RemoteServerMsgCache map = caches.get(serverName);
+            if(map == null){
+                caches.put(serverName,new RemoteServerMsgCache(serverName,time_out));
+            }
+        }finally {
+            stampedLock.unlock(temp);
         }
     }
 
@@ -59,7 +67,12 @@ public class RequestMsgManager {
                 @Override
                 public void run() {
                     if(cache.isEmpty()){  //等待map清空后再移除
-                        caches.remove(serverName);
+                        long temp = stampedLock.writeLock();
+                        try {
+                            caches.remove(serverName);
+                        }finally {
+                            stampedLock.unlock(temp);
+                        }
                         cancel();
                     }
                 }
@@ -69,7 +82,13 @@ public class RequestMsgManager {
 
     public static void putRequest(RequestExecutor request) {
         //第一步：获取对应服务的map
-        RemoteServerMsgCache map = caches.get(request.reqBase.serverName);
+        RemoteServerMsgCache map;
+        long temp = stampedLock.readLock();
+        try {
+            map = caches.get(request.reqBase.serverName);
+        }finally {
+            stampedLock.unlock(temp);
+        }
         if(map != null){
             //第二步：将request放入map
             map.put(request.reqBase.sequenceNo, request);
